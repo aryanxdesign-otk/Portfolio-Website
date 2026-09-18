@@ -5,7 +5,8 @@ import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
 
 import { env } from "@/lib/env";
-import { schemaTypes, SINGLETON_TYPES } from "@/sanity/schemas";
+import { SINGLETON_TYPES } from "@/sanity/documentTypes";
+import { schemaTypes } from "@/sanity/schemas";
 import { structure } from "@/sanity/structure";
 
 /**

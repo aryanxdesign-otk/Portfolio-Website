@@ -11,7 +11,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "typegen": "sanity schema extract --path=./sanity/extract.json && sanity typegen generate",
+    "typegen": "sanity schema extract --path=./sanity/extract.json --enforce-required-fields --force && sanity typegen generate",
     "check": "npm run typecheck && npm run lint && npm run format:check"
   },
   "dependencies": {

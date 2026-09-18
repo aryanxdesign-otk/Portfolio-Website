@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Written by `npm run typegen` and overwritten on every run — linting it
+    // would only ever produce findings we cannot fix at the source.
+    "src/sanity/types.generated.ts",
+    "sanity/extract.json",
   ]),
 ]);
 

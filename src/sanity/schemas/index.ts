@@ -23,22 +23,14 @@ import { shot } from "./documents/shot";
 import { siteSettings } from "./documents/siteSettings";
 import { testimonial } from "./documents/testimonial";
 
-/** Document types that exist exactly once. Used by the Studio structure. */
-export const SINGLETON_TYPES = ["homePage", "about", "siteSettings"] as const;
-export type SingletonType = (typeof SINGLETON_TYPES)[number];
-
-/** Types the revalidation webhook knows how to invalidate. */
-export const DOCUMENT_TYPES = [
-  "caseStudy",
-  "post",
-  "shot",
-  "testimonial",
-  "experience",
-  "about",
-  "homePage",
-  "siteSettings",
-] as const;
-export type DocumentType = (typeof DOCUMENT_TYPES)[number];
+// Re-exported so Studio-side code has one obvious import, while server code
+// can import from "@/sanity/documentTypes" without pulling in the schemas.
+export {
+  DOCUMENT_TYPES,
+  SINGLETON_TYPES,
+  type DocumentType,
+  type SingletonType,
+} from "../documentTypes";
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   // Documents
