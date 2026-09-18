@@ -18,6 +18,16 @@ import type {
 
 import { sanityFetch } from "./fetch";
 import * as q from "./queries";
+import {
+  seedAbout,
+  seedCaseStudies,
+  seedExperiences,
+  seedHomePage,
+  seedSiteSettings,
+} from "./seed";
+
+/** Slugs of the seed projects, so routes exist before Sanity is configured. */
+const seedSlugs = seedCaseStudies.map((project) => project.slug);
 
 /**
  * The content API the rest of the app uses. Pages call these, never the
@@ -32,7 +42,7 @@ export function getSiteSettings(): Promise<SiteSettingsQueryResult> {
   return sanityFetch({
     query: q.siteSettingsQuery,
     tags: ["siteSettings"],
-    fallback: null,
+    fallback: seedSiteSettings as SiteSettingsQueryResult,
   });
 }
 
@@ -42,7 +52,7 @@ export function getHomePage(): Promise<HomePageQueryResult> {
     // Reads case studies through the featured reference, so it must be
     // invalidated when either the page or a case study changes.
     tags: ["homePage", "caseStudy"],
-    fallback: null,
+    fallback: seedHomePage as HomePageQueryResult,
   });
 }
 
@@ -50,7 +60,7 @@ export function getCaseStudies(): Promise<CaseStudiesQueryResult> {
   return sanityFetch({
     query: q.caseStudiesQuery,
     tags: ["caseStudy"],
-    fallback: [],
+    fallback: seedCaseStudies as CaseStudiesQueryResult,
   });
 }
 
@@ -58,7 +68,7 @@ export function getCaseStudySlugs(): Promise<CaseStudySlugsQueryResult> {
   return sanityFetch({
     query: q.caseStudySlugsQuery,
     tags: ["caseStudy"],
-    fallback: [],
+    fallback: seedSlugs,
   });
 }
 
@@ -86,7 +96,7 @@ export function getAbout(): Promise<AboutQueryResult> {
   return sanityFetch({
     query: q.aboutQuery,
     tags: ["about"],
-    fallback: null,
+    fallback: seedAbout as AboutQueryResult,
   });
 }
 
@@ -94,7 +104,7 @@ export function getExperiences(): Promise<ExperiencesQueryResult> {
   return sanityFetch({
     query: q.experiencesQuery,
     tags: ["experience"],
-    fallback: [],
+    fallback: seedExperiences as ExperiencesQueryResult,
   });
 }
 

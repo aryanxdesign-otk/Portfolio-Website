@@ -11,7 +11,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "typegen": "sanity schema extract --path=./sanity/extract.json --enforce-required-fields --force && sanity typegen generate",
+    "typegen": "sanity schema extract --path=./sanity/extract.json --force && sanity typegen generate",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm run check:blocks",
     "check:blocks": "node scripts/check-portable-text.mjs"
   },
@@ -37,6 +37,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
+    "playwright": "^1.63.0",
     "prettier": "^3.9.8",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4",

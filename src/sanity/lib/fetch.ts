@@ -2,10 +2,10 @@ import "server-only";
 
 import { cacheLife, cacheTag } from "next/cache";
 
-import { isSanityConfigured, warnIfUnconfigured } from "@/lib/env";
+import { warnIfUnconfigured } from "@/lib/env";
 import type { DocumentType } from "@/sanity/documentTypes";
 
-import { client } from "./client";
+import { getClient } from "./client";
 
 /**
  * The single read path for published content.
@@ -35,7 +35,9 @@ export async function sanityFetch<T>({
   cacheLife("max");
   for (const tag of tags) cacheTag(tag);
 
-  if (!isSanityConfigured) {
+  const client = getClient();
+
+  if (!client) {
     warnIfUnconfigured();
     return fallback;
   }

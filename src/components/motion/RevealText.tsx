@@ -1,7 +1,6 @@
 "use client";
 
-import { motion, useInView } from "motion/react";
-import { useRef } from "react";
+import { motion } from "motion/react";
 
 import { cn } from "@/lib/cn";
 
@@ -11,8 +10,10 @@ import { useReducedMotion } from "./useReducedMotion";
  * Headline reveal — words rise into place behind a clipping mask.
  *
  * Split by word, never by character: a screen reader announcing a headline
- * one letter at a time is the classic cost of this effect. Each word keeps
- * its spaces, so text selection and copy-paste still behave.
+ * one letter at a time is the classic cost of this effect. The full string is
+ * exposed once via sr-only text and the animated spans are aria-hidden, so
+ * the structure is identical whether or not motion is allowed — no element
+ * swapping, and nothing that can get stuck mid-reveal.
  */
 export function RevealText({
   text,
@@ -25,22 +26,13 @@ export function RevealText({
   delay?: number;
   as?: "h1" | "h2" | "h3" | "p";
 }) {
-  const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-  const inView = useInView(ref, { once: true, margin: "0px 0px -10% 0px" });
-
-  if (reduced) {
-    return <Tag className={className}>{text}</Tag>;
-  }
-
   const words = text.split(" ");
 
   return (
     <Tag className={className}>
-      {/* The visible text is built from spans; this keeps the full string
-          available to assistive tech as a single readable label. */}
       <span className="sr-only">{text}</span>
-      <span ref={ref as never} aria-hidden="true">
+      <span aria-hidden="true">
         {words.map((word, index) => (
           <span
             key={`${word}-${index}`}
@@ -48,8 +40,9 @@ export function RevealText({
           >
             <motion.span
               className="inline-block"
-              initial={{ y: "110%" }}
-              animate={inView ? { y: "0%" } : { y: "110%" }}
+              initial={reduced ? false : { y: "110%" }}
+              whileInView={{ y: "0%" }}
+              viewport={{ once: true, margin: "0px 0px -10% 0px" }}
               transition={{
                 duration: 0.8,
                 delay: delay + index * 0.045,
@@ -66,9 +59,7 @@ export function RevealText({
   );
 }
 
-/**
- * Same reveal, for a block of children rather than a string.
- */
+/** The same reveal, for a block of children rather than a string. */
 export function RevealBlock({
   children,
   className,
@@ -78,17 +69,14 @@ export function RevealBlock({
   className?: string;
   delay?: number;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-  const inView = useInView(ref, { once: true, margin: "0px 0px -10% 0px" });
-
-  if (reduced) return <div className={className}>{children}</div>;
 
   return (
-    <div ref={ref} className={cn("overflow-hidden", className)}>
+    <div className={cn("overflow-hidden", className)}>
       <motion.div
-        initial={{ y: "100%" }}
-        animate={inView ? { y: "0%" } : { y: "100%" }}
+        initial={reduced ? false : { y: "100%" }}
+        whileInView={{ y: "0%" }}
+        viewport={{ once: true, margin: "0px 0px -10% 0px" }}
         transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
       >
         {children}

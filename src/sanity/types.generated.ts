@@ -38,7 +38,7 @@ export type Seo = {
 
 export type SocialLink = {
   _type: "socialLink";
-  platform:
+  platform?:
     | "x"
     | "linkedin"
     | "instagram"
@@ -49,7 +49,7 @@ export type SocialLink = {
     | "layers"
     | "other";
   label?: string;
-  url: string;
+  url?: string;
 };
 
 export type PostBody = Array<
@@ -63,7 +63,7 @@ export type PostBody = Array<
       style?: "normal" | "h2" | "h3" | "blockquote";
       listItem?: "bullet" | "number";
       markDefs?: Array<{
-        href: string;
+        href?: string;
         newTab?: boolean;
         _type: "link";
         _key: string;
@@ -94,7 +94,7 @@ export type CaseStudyBody = Array<
       style?: "normal" | "h2" | "h3" | "lead";
       listItem?: "bullet" | "number";
       markDefs?: Array<{
-        href: string;
+        href?: string;
         newTab?: boolean;
         _type: "link";
         _key: string;
@@ -136,7 +136,7 @@ export type SimpleRichText = Array<{
   style?: "normal";
   listItem?: "bullet" | "number";
   markDefs?: Array<{
-    href: string;
+    href?: string;
     newTab?: boolean;
     _type: "link";
     _key: string;
@@ -154,16 +154,16 @@ export type Spacer = {
 
 export type FigmaEmbed = {
   _type: "figmaEmbed";
-  url: string;
-  title: string;
+  url?: string;
+  title?: string;
   aspectRatio?: "16/9" | "4/3" | "1/1" | "9/16";
 };
 
 export type StatRow = {
   _type: "statRow";
-  stats: Array<{
-    value: string;
-    label: string;
+  stats?: Array<{
+    value?: string;
+    label?: string;
     _type: "stat";
     _key: string;
   }>;
@@ -171,7 +171,7 @@ export type StatRow = {
 
 export type PullQuote = {
   _type: "pullQuote";
-  quote: string;
+  quote?: string;
   attribution?: string;
 };
 
@@ -184,7 +184,7 @@ export type SanityFileAssetReference = {
 
 export type VideoBlock = {
   _type: "videoBlock";
-  file: {
+  file?: {
     asset?: SanityFileAssetReference;
     media?: unknown;
     _type: "file";
@@ -196,7 +196,7 @@ export type VideoBlock = {
     crop?: SanityImageCrop;
     _type: "image";
   };
-  alt: string;
+  alt?: string;
   caption?: string;
   width?: "inset" | "full" | "bleed";
   autoplay?: boolean;
@@ -204,7 +204,7 @@ export type VideoBlock = {
 
 export type ImageGrid = {
   _type: "imageGrid";
-  images: Array<
+  images?: Array<
     {
       _key: string;
     } & CaptionedImage
@@ -214,7 +214,7 @@ export type ImageGrid = {
 
 export type ImageBlock = {
   _type: "imageBlock";
-  image: CaptionedImage;
+  image?: CaptionedImage;
   width?: "inset" | "full" | "bleed";
   background?: boolean;
 };
@@ -225,7 +225,7 @@ export type CaptionedImage = {
   media?: unknown;
   hotspot?: SanityImageHotspot;
   crop?: SanityImageCrop;
-  alt: string;
+  alt?: string;
   caption?: string;
 };
 
@@ -235,11 +235,11 @@ export type SiteSettings = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  name: string;
+  name?: string;
   tagline?: string;
   availabilityStatus?: "available" | "open" | "unavailable" | "hidden";
   availabilityNote?: string;
-  email: string;
+  email?: string;
   socials?: Array<
     {
       _key: string;
@@ -251,8 +251,8 @@ export type SiteSettings = {
     _type: "file";
   };
   navLinks?: Array<{
-    label: string;
-    href: string;
+    label?: string;
+    href?: string;
     _type: "navLink";
     _key: string;
   }>;
@@ -273,7 +273,7 @@ export type HomePage = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  heroHeadline: string;
+  heroHeadline?: string;
   heroSubline?: string;
   marqueeWords?: Array<string>;
   featuredCaseStudies?: Array<
@@ -295,7 +295,7 @@ export type About = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  headline: string;
+  headline?: string;
   bio?: SimpleRichText;
   portrait?: CaptionedImage;
   skills?: Array<string>;
@@ -309,9 +309,9 @@ export type Experience = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  company: string;
-  role: string;
-  startDate: string;
+  company?: string;
+  role?: string;
+  startDate?: string;
   isCurrent?: boolean;
   endDate?: string;
   location?: string;
@@ -328,18 +328,18 @@ export type Experience = {
 
 export type SanityImageCrop = {
   _type: "sanity.imageCrop";
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
 };
 
 export type SanityImageHotspot = {
   _type: "sanity.imageHotspot";
-  x: number;
-  y: number;
-  height: number;
-  width: number;
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
 };
 
 export type Testimonial = {
@@ -348,8 +348,8 @@ export type Testimonial = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  quote: string;
-  authorName: string;
+  quote?: string;
+  authorName?: string;
   role?: string;
   company?: string;
   avatar?: {
@@ -370,8 +370,8 @@ export type Shot = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title: string;
-  mediaType: "image" | "video";
+  title?: string;
+  mediaType?: "image" | "video";
   image?: CaptionedImage;
   video?: {
     asset?: SanityFileAssetReference;
@@ -397,9 +397,9 @@ export type Post = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title: string;
-  slug: Slug;
-  publishedAt: string;
+  title?: string;
+  slug?: Slug;
+  publishedAt?: string;
   excerpt?: string;
   coverImage?: CaptionedImage;
   body?: PostBody;
@@ -409,7 +409,7 @@ export type Post = {
 
 export type Slug = {
   _type: "slug";
-  current: string;
+  current?: string;
   source?: string;
 };
 
@@ -419,9 +419,9 @@ export type CaseStudy = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title: string;
-  slug: Slug;
-  summary: string;
+  title?: string;
+  slug?: Slug;
+  summary?: string;
   body?: CaseStudyBody;
   client?: string;
   roles?: Array<string>;
@@ -429,7 +429,7 @@ export type CaseStudy = {
   timeline?: string;
   tools?: Array<string>;
   externalUrl?: string;
-  coverImage: CaptionedImage;
+  coverImage?: CaptionedImage;
   thumbnailVideo?: {
     asset?: SanityFileAssetReference;
     media?: unknown;
@@ -462,9 +462,9 @@ export type SanityImagePalette = {
 
 export type SanityImageDimensions = {
   _type: "sanity.imageDimensions";
-  height: number;
-  width: number;
-  aspectRatio: number;
+  height?: number;
+  width?: number;
+  aspectRatio?: number;
 };
 
 export type SanityImageMetadata = {
@@ -490,14 +490,14 @@ export type SanityFileAsset = {
   title?: string;
   description?: string;
   altText?: string;
-  sha1hash: string;
-  extension: string;
-  mimeType: string;
-  size: number;
-  assetId: string;
+  sha1hash?: string;
+  extension?: string;
+  mimeType?: string;
+  size?: number;
+  assetId?: string;
   uploadId?: string;
-  path: string;
-  url: string;
+  path?: string;
+  url?: string;
   source?: SanityAssetSourceData;
 };
 
@@ -519,14 +519,14 @@ export type SanityImageAsset = {
   title?: string;
   description?: string;
   altText?: string;
-  sha1hash: string;
-  extension: string;
-  mimeType: string;
-  size: number;
-  assetId: string;
+  sha1hash?: string;
+  extension?: string;
+  mimeType?: string;
+  size?: number;
+  assetId?: string;
   uploadId?: string;
-  path: string;
-  url: string;
+  path?: string;
+  url?: string;
   metadata?: SanityImageMetadata;
   source?: SanityAssetSourceData;
 };
@@ -579,11 +579,11 @@ export type AllSanitySchemaTypes =
 // Variable: siteSettingsQuery
 // Query: *[_type == "siteSettings"][0] {    name,    tagline,    availabilityStatus,    availabilityNote,    email,    socials[] { platform, label, url },    "cvUrl": cvFile.asset->url,    navLinks[] { label, href },    footerNote,    defaultSeo {   title,  description,  noIndex,  ogImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } }  }
 export type SiteSettingsQueryResult = {
-  name: string;
+  name: string | null;
   tagline: string | null;
   availabilityStatus: "available" | "hidden" | "open" | "unavailable" | null;
   availabilityNote: string | null;
-  email: string;
+  email: string | null;
   socials: Array<{
     platform:
       | "behance"
@@ -594,14 +594,15 @@ export type SiteSettingsQueryResult = {
       | "linkedin"
       | "other"
       | "readcv"
-      | "x";
+      | "x"
+      | null;
     label: string | null;
-    url: string;
+    url: string | null;
   }> | null;
   cvUrl: string | null;
   navLinks: Array<{
-    label: string;
-    href: string;
+    label: string | null;
+    href: string | null;
   }> | null;
   footerNote: string | null;
   defaultSeo: {
@@ -611,13 +612,13 @@ export type SiteSettingsQueryResult = {
     ogImage: {
       asset: {
         _id: string;
-        url: string;
+        url: string | null;
         metadata: {
           lqip: string | null;
           dimensions: {
-            width: number;
-            height: number;
-            aspectRatio: number;
+            width: number | null;
+            height: number | null;
+            aspectRatio: number | null;
           } | null;
         } | null;
       } | null;
@@ -633,7 +634,7 @@ export type SiteSettingsQueryResult = {
 // Variable: homePageQuery
 // Query: *[_type == "homePage"][0] {    heroHeadline,    heroSubline,    marqueeWords,    workSectionHeading,    playgroundSectionHeading,    testimonialsSectionHeading,    ctaHeading,    ctaText,    seo {   title,  description,  noIndex,  ogImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } },    // Explicit order if set, otherwise everything flagged as featured.    "featured": coalesce(      featuredCaseStudies[]-> {   _id,  title,  "slug": slug.current,  summary,  client,  roles,  year,  accentColor,  featured,  order,  coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } },  "thumbnailVideoUrl": thumbnailVideo.asset->url },      *[_type == "caseStudy" && featured == true]        | order(coalesce(order, 9999) asc, year desc) {   _id,  title,  "slug": slug.current,  summary,  client,  roles,  year,  accentColor,  featured,  order,  coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } },  "thumbnailVideoUrl": thumbnailVideo.asset->url }    )  }
 export type HomePageQueryResult = {
-  heroHeadline: string;
+  heroHeadline: string | null;
   heroSubline: string | null;
   marqueeWords: Array<string> | null;
   workSectionHeading: string | null;
@@ -648,13 +649,13 @@ export type HomePageQueryResult = {
     ogImage: {
       asset: {
         _id: string;
-        url: string;
+        url: string | null;
         metadata: {
           lqip: string | null;
           dimensions: {
-            width: number;
-            height: number;
-            aspectRatio: number;
+            width: number | null;
+            height: number | null;
+            aspectRatio: number | null;
           } | null;
         } | null;
       } | null;
@@ -667,9 +668,9 @@ export type HomePageQueryResult = {
   featured:
     | Array<{
         _id: string;
-        title: string;
-        slug: string;
-        summary: string;
+        title: string | null;
+        slug: string | null;
+        summary: string | null;
         client: string | null;
         roles: Array<string> | null;
         year: number | null;
@@ -680,29 +681,29 @@ export type HomePageQueryResult = {
           _type: "captionedImage";
           asset: {
             _id: string;
-            url: string;
+            url: string | null;
             metadata: {
               lqip: string | null;
               dimensions: {
-                width: number;
-                height: number;
-                aspectRatio: number;
+                width: number | null;
+                height: number | null;
+                aspectRatio: number | null;
               } | null;
             } | null;
           } | null;
           media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
-          alt: string;
+          alt?: string;
           caption?: string;
-        };
+        } | null;
         thumbnailVideoUrl: string | null;
       }>
     | Array<{
         _id: string;
-        title: string;
-        slug: string;
-        summary: string;
+        title: string | null;
+        slug: string | null;
+        summary: string | null;
         client: string | null;
         roles: Array<string> | null;
         year: number | null;
@@ -713,22 +714,22 @@ export type HomePageQueryResult = {
           _type: "captionedImage";
           asset: {
             _id: string;
-            url: string;
+            url: string | null;
             metadata: {
               lqip: string | null;
               dimensions: {
-                width: number;
-                height: number;
-                aspectRatio: number;
+                width: number | null;
+                height: number | null;
+                aspectRatio: number | null;
               } | null;
             } | null;
           } | null;
           media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
-          alt: string;
+          alt?: string;
           caption?: string;
-        };
+        } | null;
         thumbnailVideoUrl: string | null;
       }>;
 } | null;
@@ -738,9 +739,9 @@ export type HomePageQueryResult = {
 // Query: *[_type == "caseStudy" && defined(slug.current)]    | order(coalesce(order, 9999) asc, year desc) {      _id,  title,  "slug": slug.current,  summary,  client,  roles,  year,  accentColor,  featured,  order,  coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } },  "thumbnailVideoUrl": thumbnailVideo.asset->url  }
 export type CaseStudiesQueryResult = Array<{
   _id: string;
-  title: string;
-  slug: string;
-  summary: string;
+  title: string | null;
+  slug: string | null;
+  summary: string | null;
   client: string | null;
   roles: Array<string> | null;
   year: number | null;
@@ -751,38 +752,38 @@ export type CaseStudiesQueryResult = Array<{
     _type: "captionedImage";
     asset: {
       _id: string;
-      url: string;
+      url: string | null;
       metadata: {
         lqip: string | null;
         dimensions: {
-          width: number;
-          height: number;
-          aspectRatio: number;
+          width: number | null;
+          height: number | null;
+          aspectRatio: number | null;
         } | null;
       } | null;
     } | null;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
-    alt: string;
+    alt?: string;
     caption?: string;
-  };
+  } | null;
   thumbnailVideoUrl: string | null;
 }>;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: caseStudySlugsQuery
 // Query: *[_type == "caseStudy" && defined(slug.current)].slug.current
-export type CaseStudySlugsQueryResult = Array<string>;
+export type CaseStudySlugsQueryResult = Array<string | null>;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: caseStudyBySlugQuery
 // Query: *[_type == "caseStudy" && slug.current == $slug][0] {      _id,  title,  "slug": slug.current,  summary,  client,  roles,  year,  accentColor,  featured,  order,  coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } },  "thumbnailVideoUrl": thumbnailVideo.asset->url,    timeline,    tools,    externalUrl,    seo {   title,  description,  noIndex,  ogImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } },    body[] {      ...,      _type == "imageBlock" => { ..., image {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } },      _type == "imageGrid" => { ..., images[] {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } },      _type == "videoBlock" => {        ...,        "videoUrl": file.asset->url,        poster {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } }      },      _type == "block" => {        ...,        markDefs[] { ... }      }    },    "testimonials": *[_type == "testimonial" && relatedCaseStudy._ref == ^._id]      | order(coalesce(order, 9999) asc) {      _id, quote, authorName, role, company,      avatar {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } }    },    // Neighbours for the "next project" link at the end of a case study.    "next": *[_type == "caseStudy" && defined(slug.current) && _id != ^._id]      | order(coalesce(order, 9999) asc, year desc)[0] {      title, "slug": slug.current, coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } }    }  }
 export type CaseStudyBySlugQueryResult = {
   _id: string;
-  title: string;
-  slug: string;
-  summary: string;
+  title: string | null;
+  slug: string | null;
+  summary: string | null;
   client: string | null;
   roles: Array<string> | null;
   year: number | null;
@@ -793,22 +794,22 @@ export type CaseStudyBySlugQueryResult = {
     _type: "captionedImage";
     asset: {
       _id: string;
-      url: string;
+      url: string | null;
       metadata: {
         lqip: string | null;
         dimensions: {
-          width: number;
-          height: number;
-          aspectRatio: number;
+          width: number | null;
+          height: number | null;
+          aspectRatio: number | null;
         } | null;
       } | null;
     } | null;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
-    alt: string;
+    alt?: string;
     caption?: string;
-  };
+  } | null;
   thumbnailVideoUrl: string | null;
   timeline: string | null;
   tools: Array<string> | null;
@@ -820,13 +821,13 @@ export type CaseStudyBySlugQueryResult = {
     ogImage: {
       asset: {
         _id: string;
-        url: string;
+        url: string | null;
         metadata: {
           lqip: string | null;
           dimensions: {
-            width: number;
-            height: number;
-            aspectRatio: number;
+            width: number | null;
+            height: number | null;
+            aspectRatio: number | null;
           } | null;
         } | null;
       } | null;
@@ -847,7 +848,7 @@ export type CaseStudyBySlugQueryResult = {
         style?: "h2" | "h3" | "lead" | "normal";
         listItem?: "bullet" | "number";
         markDefs: Array<{
-          href: string;
+          href?: string;
           newTab?: boolean;
           _type: "link";
           _key: string;
@@ -859,8 +860,8 @@ export type CaseStudyBySlugQueryResult = {
     | {
         _key: string;
         _type: "figmaEmbed";
-        url: string;
-        title: string;
+        url?: string;
+        title?: string;
         aspectRatio?: "1/1" | "16/9" | "4/3" | "9/16";
       }
     | {
@@ -870,22 +871,22 @@ export type CaseStudyBySlugQueryResult = {
           _type: "captionedImage";
           asset: {
             _id: string;
-            url: string;
+            url: string | null;
             metadata: {
               lqip: string | null;
               dimensions: {
-                width: number;
-                height: number;
-                aspectRatio: number;
+                width: number | null;
+                height: number | null;
+                aspectRatio: number | null;
               } | null;
             } | null;
           } | null;
           media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
-          alt: string;
+          alt?: string;
           caption?: string;
-        };
+        } | null;
         width?: "bleed" | "full" | "inset";
         background?: boolean;
       }
@@ -897,28 +898,28 @@ export type CaseStudyBySlugQueryResult = {
           _type: "captionedImage";
           asset: {
             _id: string;
-            url: string;
+            url: string | null;
             metadata: {
               lqip: string | null;
               dimensions: {
-                width: number;
-                height: number;
-                aspectRatio: number;
+                width: number | null;
+                height: number | null;
+                aspectRatio: number | null;
               } | null;
             } | null;
           } | null;
           media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
-          alt: string;
+          alt?: string;
           caption?: string;
-        }>;
+        }> | null;
         gap?: "none" | "normal" | "tight";
       }
     | {
         _key: string;
         _type: "pullQuote";
-        quote: string;
+        quote?: string;
         attribution?: string;
       }
     | {
@@ -930,9 +931,9 @@ export type CaseStudyBySlugQueryResult = {
     | {
         _key: string;
         _type: "statRow";
-        stats: Array<{
-          value: string;
-          label: string;
+        stats?: Array<{
+          value?: string;
+          label?: string;
           _type: "stat";
           _key: string;
         }>;
@@ -940,7 +941,7 @@ export type CaseStudyBySlugQueryResult = {
     | {
         _key: string;
         _type: "videoBlock";
-        file: {
+        file?: {
           asset?: SanityFileAssetReference;
           media?: unknown;
           _type: "file";
@@ -948,13 +949,13 @@ export type CaseStudyBySlugQueryResult = {
         poster: {
           asset: {
             _id: string;
-            url: string;
+            url: string | null;
             metadata: {
               lqip: string | null;
               dimensions: {
-                width: number;
-                height: number;
-                aspectRatio: number;
+                width: number | null;
+                height: number | null;
+                aspectRatio: number | null;
               } | null;
             } | null;
           } | null;
@@ -963,7 +964,7 @@ export type CaseStudyBySlugQueryResult = {
           crop?: SanityImageCrop;
           _type: "image";
         } | null;
-        alt: string;
+        alt?: string;
         caption?: string;
         width?: "bleed" | "full" | "inset";
         autoplay?: boolean;
@@ -972,20 +973,20 @@ export type CaseStudyBySlugQueryResult = {
   > | null;
   testimonials: Array<{
     _id: string;
-    quote: string;
-    authorName: string;
+    quote: string | null;
+    authorName: string | null;
     role: string | null;
     company: string | null;
     avatar: {
       asset: {
         _id: string;
-        url: string;
+        url: string | null;
         metadata: {
           lqip: string | null;
           dimensions: {
-            width: number;
-            height: number;
-            aspectRatio: number;
+            width: number | null;
+            height: number | null;
+            aspectRatio: number | null;
           } | null;
         } | null;
       } | null;
@@ -996,28 +997,28 @@ export type CaseStudyBySlugQueryResult = {
     } | null;
   }>;
   next: {
-    title: string;
-    slug: string;
+    title: string | null;
+    slug: string | null;
     coverImage: {
       _type: "captionedImage";
       asset: {
         _id: string;
-        url: string;
+        url: string | null;
         metadata: {
           lqip: string | null;
           dimensions: {
-            width: number;
-            height: number;
-            aspectRatio: number;
+            width: number | null;
+            height: number | null;
+            aspectRatio: number | null;
           } | null;
         } | null;
       } | null;
       media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
-      alt: string;
+      alt?: string;
       caption?: string;
-    };
+    } | null;
   } | null;
 } | null;
 
@@ -1026,8 +1027,8 @@ export type CaseStudyBySlugQueryResult = {
 // Query: *[_type == "shot"] | order(coalesce(order, 9999) asc, date desc) {    _id,    title,    mediaType,    aspectRatio,    date,    externalLink,    image {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } },    "videoUrl": video.asset->url,    videoPoster {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } }  }
 export type ShotsQueryResult = Array<{
   _id: string;
-  title: string;
-  mediaType: "image" | "video";
+  title: string | null;
+  mediaType: "image" | "video" | null;
   aspectRatio: "1/1" | "16/9" | "3/4" | "4/3" | "9/16" | null;
   date: string | null;
   externalLink: string | null;
@@ -1035,33 +1036,33 @@ export type ShotsQueryResult = Array<{
     _type: "captionedImage";
     asset: {
       _id: string;
-      url: string;
+      url: string | null;
       metadata: {
         lqip: string | null;
         dimensions: {
-          width: number;
-          height: number;
-          aspectRatio: number;
+          width: number | null;
+          height: number | null;
+          aspectRatio: number | null;
         } | null;
       } | null;
     } | null;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
-    alt: string;
+    alt?: string;
     caption?: string;
   } | null;
   videoUrl: string | null;
   videoPoster: {
     asset: {
       _id: string;
-      url: string;
+      url: string | null;
       metadata: {
         lqip: string | null;
         dimensions: {
-          width: number;
-          height: number;
-          aspectRatio: number;
+          width: number | null;
+          height: number | null;
+          aspectRatio: number | null;
         } | null;
       } | null;
     } | null;
@@ -1076,7 +1077,7 @@ export type ShotsQueryResult = Array<{
 // Variable: aboutQuery
 // Query: *[_type == "about"][0] {    headline,    bio,    skills,    tools,    portrait {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } },    seo {   title,  description,  noIndex,  ogImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } }  }
 export type AboutQueryResult = {
-  headline: string;
+  headline: string | null;
   bio: SimpleRichText | null;
   skills: Array<string> | null;
   tools: Array<string> | null;
@@ -1084,20 +1085,20 @@ export type AboutQueryResult = {
     _type: "captionedImage";
     asset: {
       _id: string;
-      url: string;
+      url: string | null;
       metadata: {
         lqip: string | null;
         dimensions: {
-          width: number;
-          height: number;
-          aspectRatio: number;
+          width: number | null;
+          height: number | null;
+          aspectRatio: number | null;
         } | null;
       } | null;
     } | null;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
-    alt: string;
+    alt?: string;
     caption?: string;
   } | null;
   seo: {
@@ -1107,13 +1108,13 @@ export type AboutQueryResult = {
     ogImage: {
       asset: {
         _id: string;
-        url: string;
+        url: string | null;
         metadata: {
           lqip: string | null;
           dimensions: {
-            width: number;
-            height: number;
-            aspectRatio: number;
+            width: number | null;
+            height: number | null;
+            aspectRatio: number | null;
           } | null;
         } | null;
       } | null;
@@ -1130,9 +1131,9 @@ export type AboutQueryResult = {
 // Query: *[_type == "experience"] | order(startDate desc) {    _id,    company,    role,    startDate,    endDate,    isCurrent,    location,    description,    url,    logo {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } }  }
 export type ExperiencesQueryResult = Array<{
   _id: string;
-  company: string;
-  role: string;
-  startDate: string;
+  company: string | null;
+  role: string | null;
+  startDate: string | null;
   endDate: string | null;
   isCurrent: boolean | null;
   location: string | null;
@@ -1141,13 +1142,13 @@ export type ExperiencesQueryResult = Array<{
   logo: {
     asset: {
       _id: string;
-      url: string;
+      url: string | null;
       metadata: {
         lqip: string | null;
         dimensions: {
-          width: number;
-          height: number;
-          aspectRatio: number;
+          width: number | null;
+          height: number | null;
+          aspectRatio: number | null;
         } | null;
       } | null;
     } | null;
@@ -1163,20 +1164,20 @@ export type ExperiencesQueryResult = Array<{
 // Query: *[_type == "testimonial" && featured == true]    | order(coalesce(order, 9999) asc) {    _id, quote, authorName, role, company,    avatar {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } }  }
 export type FeaturedTestimonialsQueryResult = Array<{
   _id: string;
-  quote: string;
-  authorName: string;
+  quote: string | null;
+  authorName: string | null;
   role: string | null;
   company: string | null;
   avatar: {
     asset: {
       _id: string;
-      url: string;
+      url: string | null;
       metadata: {
         lqip: string | null;
         dimensions: {
-          width: number;
-          height: number;
-          aspectRatio: number;
+          width: number | null;
+          height: number | null;
+          aspectRatio: number | null;
         } | null;
       } | null;
     } | null;
@@ -1192,29 +1193,29 @@ export type FeaturedTestimonialsQueryResult = Array<{
 // Query: *[_type == "post" && defined(slug.current)] | order(publishedAt desc) {    _id,    title,    "slug": slug.current,    publishedAt,    excerpt,    tags,    coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } }  }
 export type PostsQueryResult = Array<{
   _id: string;
-  title: string;
-  slug: string;
-  publishedAt: string;
+  title: string | null;
+  slug: string | null;
+  publishedAt: string | null;
   excerpt: string | null;
   tags: Array<string> | null;
   coverImage: {
     _type: "captionedImage";
     asset: {
       _id: string;
-      url: string;
+      url: string | null;
       metadata: {
         lqip: string | null;
         dimensions: {
-          width: number;
-          height: number;
-          aspectRatio: number;
+          width: number | null;
+          height: number | null;
+          aspectRatio: number | null;
         } | null;
       } | null;
     } | null;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
-    alt: string;
+    alt?: string;
     caption?: string;
   } | null;
 }>;
@@ -1222,36 +1223,36 @@ export type PostsQueryResult = Array<{
 // Source: src/sanity/lib/queries.ts
 // Variable: postSlugsQuery
 // Query: *[_type == "post" && defined(slug.current)].slug.current
-export type PostSlugsQueryResult = Array<string>;
+export type PostSlugsQueryResult = Array<string | null>;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: postBySlugQuery
 // Query: *[_type == "post" && slug.current == $slug][0] {    _id,    title,    "slug": slug.current,    publishedAt,    excerpt,    tags,    coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } },    seo {   title,  description,  noIndex,  ogImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } },    body[] {      ...,      _type == "imageBlock" => { ..., image {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } },      _type == "videoBlock" => {        ...,        "videoUrl": file.asset->url,        poster {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } }      }    }  }
 export type PostBySlugQueryResult = {
   _id: string;
-  title: string;
-  slug: string;
-  publishedAt: string;
+  title: string | null;
+  slug: string | null;
+  publishedAt: string | null;
   excerpt: string | null;
   tags: Array<string> | null;
   coverImage: {
     _type: "captionedImage";
     asset: {
       _id: string;
-      url: string;
+      url: string | null;
       metadata: {
         lqip: string | null;
         dimensions: {
-          width: number;
-          height: number;
-          aspectRatio: number;
+          width: number | null;
+          height: number | null;
+          aspectRatio: number | null;
         } | null;
       } | null;
     } | null;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
-    alt: string;
+    alt?: string;
     caption?: string;
   } | null;
   seo: {
@@ -1261,13 +1262,13 @@ export type PostBySlugQueryResult = {
     ogImage: {
       asset: {
         _id: string;
-        url: string;
+        url: string | null;
         metadata: {
           lqip: string | null;
           dimensions: {
-            width: number;
-            height: number;
-            aspectRatio: number;
+            width: number | null;
+            height: number | null;
+            aspectRatio: number | null;
           } | null;
         } | null;
       } | null;
@@ -1288,7 +1289,7 @@ export type PostBySlugQueryResult = {
         style?: "blockquote" | "h2" | "h3" | "normal";
         listItem?: "bullet" | "number";
         markDefs?: Array<{
-          href: string;
+          href?: string;
           newTab?: boolean;
           _type: "link";
           _key: string;
@@ -1304,35 +1305,35 @@ export type PostBySlugQueryResult = {
           _type: "captionedImage";
           asset: {
             _id: string;
-            url: string;
+            url: string | null;
             metadata: {
               lqip: string | null;
               dimensions: {
-                width: number;
-                height: number;
-                aspectRatio: number;
+                width: number | null;
+                height: number | null;
+                aspectRatio: number | null;
               } | null;
             } | null;
           } | null;
           media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
-          alt: string;
+          alt?: string;
           caption?: string;
-        };
+        } | null;
         width?: "bleed" | "full" | "inset";
         background?: boolean;
       }
     | {
         _key: string;
         _type: "pullQuote";
-        quote: string;
+        quote?: string;
         attribution?: string;
       }
     | {
         _key: string;
         _type: "videoBlock";
-        file: {
+        file?: {
           asset?: SanityFileAssetReference;
           media?: unknown;
           _type: "file";
@@ -1340,13 +1341,13 @@ export type PostBySlugQueryResult = {
         poster: {
           asset: {
             _id: string;
-            url: string;
+            url: string | null;
             metadata: {
               lqip: string | null;
               dimensions: {
-                width: number;
-                height: number;
-                aspectRatio: number;
+                width: number | null;
+                height: number | null;
+                aspectRatio: number | null;
               } | null;
             } | null;
           } | null;
@@ -1355,7 +1356,7 @@ export type PostBySlugQueryResult = {
           crop?: SanityImageCrop;
           _type: "image";
         } | null;
-        alt: string;
+        alt?: string;
         caption?: string;
         width?: "bleed" | "full" | "inset";
         autoplay?: boolean;
@@ -1369,11 +1370,11 @@ export type PostBySlugQueryResult = {
 // Query: {  "caseStudies": *[_type == "caseStudy" && defined(slug.current)] {    "slug": slug.current, _updatedAt  },  "posts": *[_type == "post" && defined(slug.current)] {    "slug": slug.current, _updatedAt  }}
 export type SitemapQueryResult = {
   caseStudies: Array<{
-    slug: string;
+    slug: string | null;
     _updatedAt: string;
   }>;
   posts: Array<{
-    slug: string;
+    slug: string | null;
     _updatedAt: string;
   }>;
 };
