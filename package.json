@@ -12,12 +12,14 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "typegen": "sanity schema extract --path=./sanity/extract.json --enforce-required-fields --force && sanity typegen generate",
-    "check": "npm run typecheck && npm run lint && npm run format:check"
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run check:blocks",
+    "check:blocks": "node scripts/check-portable-text.mjs"
   },
   "dependencies": {
     "@portabletext/react": "^8.0.1",
     "@sanity/image-url": "^2.1.1",
     "@sanity/vision": "^6.15.0",
+    "clsx": "^2.1.1",
     "lenis": "^1.3.26",
     "motion": "^13.4.0",
     "next": "16.3.5",
@@ -25,7 +27,8 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "sanity": "^6.15.0",
-    "styled-components": "^6.5.3"
+    "styled-components": "^6.5.3",
+    "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

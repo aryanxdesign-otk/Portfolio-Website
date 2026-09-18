@@ -179,6 +179,17 @@
   }
 }
 
+/* Marquee track. The strip renders two identical copies side by side, so
+   translating by exactly half the track width loops with no visible seam. */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
 @utility container-page {
   width: 100%;
   max-width: var(--container-max);
