@@ -52,8 +52,10 @@ export const siteSettingsQuery = defineQuery(`
     availabilityStatus,
     availabilityNote,
     email,
-    socials[] { platform, label, url },
+    socials[] { platform, label, url, followerCount },
     "cvUrl": cvFile.asset->url,
+    bookingUrl,
+    bookingLabel,
     navLinks[] { label, href },
     footerNote,
     defaultSeo { ${SEO_FIELDS} }
@@ -64,14 +66,20 @@ export const siteSettingsQuery = defineQuery(`
 
 export const homePageQuery = defineQuery(`
   *[_type == "homePage"][0] {
-    heroHeadline,
+    heroHeading { lead, rest },
     heroSubline,
-    marqueeWords,
+    heroPrimaryCta { label, href },
+    heroVideoUrl,
+    clients[] { name, url, logo { ${IMAGE_FIELDS} } },
+    clientsLabel,
     workSectionHeading,
-    playgroundSectionHeading,
-    testimonialsSectionHeading,
-    ctaHeading,
-    ctaText,
+    workAllLabel,
+    toolsHeading { lead, rest },
+    toolsNote,
+    tools[] { name, url, icon { ${IMAGE_FIELDS} } },
+    aboutHeading { lead, rest },
+    ctaHeading { lead, rest },
+    footerWordmark,
     seo { ${SEO_FIELDS} },
     // Explicit order if set, otherwise everything flagged as featured.
     "featured": coalesce(
@@ -152,8 +160,8 @@ export const aboutQuery = defineQuery(`
     headline,
     bio,
     skills,
-    tools,
     portrait { ${IMAGE_FIELDS} },
+    signature { ${IMAGE_FIELDS} },
     seo { ${SEO_FIELDS} }
   }
 `);

@@ -37,6 +37,16 @@ export const socialLink = defineType({
       type: "url",
       validation: (rule) => rule.required().uri({ scheme: ["https", "http"] }),
     }),
+    defineField({
+      name: "followerCount",
+      title: "Follower count",
+      type: "number",
+      description:
+        "Optional. When set, this link renders as a wider pill showing the " +
+        "count — used for the one profile worth calling out. It is a manual " +
+        "figure, so revisit it occasionally.",
+      validation: (rule) => rule.min(0).integer(),
+    }),
   ],
   preview: {
     select: { title: "platform", subtitle: "url" },

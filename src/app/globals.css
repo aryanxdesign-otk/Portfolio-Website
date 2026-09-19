@@ -2,97 +2,114 @@
 
 /* ---------------------------------------------------------------------------
    Design tokens
+
+   The system is light-only by design: the source layout uses a near-white
+   page with a single inverted (black) band at the foot, and the contrast
+   between those two is doing real work. A dark theme would have to reinvent
+   that relationship rather than recolour it, so there isn't one.
+
    Raw values live on :root; Tailwind reads them through @theme inline below.
-   Swap values here and the whole site follows.
 --------------------------------------------------------------------------- */
 
 :root {
-  /* Surfaces & ink — near-black on near-white, warm-shifted off pure grey */
-  --bg: #fcfcfc;
-  --bg-subtle: #f4f4f3;
-  --bg-inset: #ebebe9;
-  --ink: #16150f;
-  --ink-muted: #6a6a63;
-  --ink-faint: #9a9a92;
-  --line: #e4e4e0;
+  /* Surfaces. The page is off-white; cards, chips and the nav are pure white
+     and read as lifted against it. That 3% difference is the whole trick —
+     there are almost no borders on raised elements. */
+  --bg: #f7f7f7;
+  --bg-raised: #ffffff;
+  --bg-inset: #efefef;
+  --bg-inverse: #000000;
 
-  --accent: #16150f;
-  --accent-contrast: #fcfcfc;
-  /* Availability dot, from the Framer design */
-  --positive: #12b33f;
+  /* Ink. `muted` is the first clause of every two-tone heading, so it has to
+     stay readable at display sizes while clearly receding — mid-grey, not
+     light grey. `subtle` is for body copy set against the page. */
+  --ink: #0a0a0a;
+  --ink-muted: #8c8c8c;
+  --ink-subtle: #5e5e5e;
+  --ink-faint: #a6a6a6;
+  --ink-inverse: #ffffff;
+  --ink-inverse-muted: #8c8c8c;
 
-  --font-display: var(--font-geist-sans);
+  --line: #e8e8e8;
+  --line-strong: #d8d8d8;
 
-  /* Type scale. A text-led site wants a short, tight scale — the jump from
-     body to the largest heading is deliberately small. Fluid between a
-     320px and 1440px viewport. */
+  /* The only chromatic colour on the page: the availability dot. */
+  --positive: #3ecf6d;
+
+  /* Type ----------------------------------------------------------------
+     Geist throughout, with Geist Mono for the availability badge.
+
+     A display scale this tall needs tight tracking or the headings read as
+     loose; the negative letter-spacing is applied per step rather than
+     globally, because body copy at 16px wants none of it. */
   --text-xs: 0.75rem;
   --text-sm: 0.8125rem;
   --text-base: 0.9375rem;
   --text-md: 1rem;
-  --text-lg: clamp(1.0625rem, 1rem + 0.3vw, 1.125rem);
-  --text-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
-  --text-2xl: clamp(1.75rem, 1.5rem + 1.2vw, 2.25rem);
-  --text-3xl: clamp(2.25rem, 1.8rem + 2.2vw, 3rem);
+  --text-lg: 1.125rem;
+  --text-xl: clamp(1.25rem, 1.15rem + 0.4vw, 1.375rem);
+  --text-2xl: clamp(1.5rem, 1.3rem + 0.9vw, 2rem);
+  /* Section headings and the hero share one size — in the source they are
+     visually identical, which is what makes the page feel like one voice. */
+  /* A step below the section headings, for the one heading long enough that
+     the display size would push it onto a third line. */
+  --text-display-sm: clamp(1.75rem, 1.1rem + 2.4vw, 2.75rem);
+  --text-display: clamp(2.25rem, 1.5rem + 3.2vw, 3.75rem);
+  /* Capped where the hero's closing clause still fits the text column on one
+     line. The container stops growing at --container-max, so the column width
+     is fixed above ~1280px and the heading cannot keep scaling with it. */
+  --text-display-lg: clamp(2.25rem, 1.4rem + 3.4vw, 3.375rem);
+  /* The footer wordmark, which bleeds off the bottom edge. */
+  --text-wordmark: clamp(5rem, 2rem + 17vw, 16rem);
 
-  /* Rhythm. The reading column is the frame for everything. */
-  --space-section: clamp(3rem, 2rem + 4vw, 4.5rem);
-  --space-gutter: clamp(1.5rem, 1rem + 2.5vw, 2rem);
-  --container-max: 40rem;
+  --tracking-display: -0.035em;
+  --tracking-tight: -0.02em;
 
-  /* Motion — one easing vocabulary, referenced by every primitive */
+  /* Rhythm --------------------------------------------------------------
+     A wide grid, not a reading column. Sections are separated by hairlines
+     and generous padding rather than by background changes. */
+  --container-max: 75rem;
+  --space-gutter: clamp(1.25rem, 0.75rem + 2.5vw, 2.5rem);
+  --space-section: clamp(4rem, 2.5rem + 6vw, 8rem);
+
+  /* Shape. Pills for anything interactive, soft rectangles for media. */
+  --radius-pill: 9999px;
+  --radius-card: 0.875rem;
+  --radius-chip: 0.75rem;
+
+  /* Elevation. One shadow, used sparingly — the nav, the chips, the cards
+     in flight. Two layers so the edge stays crisp at small sizes. */
+  --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.04), 0 4px 16px rgb(0 0 0 / 0.06);
+  --shadow-float: 0 2px 6px rgb(0 0 0 / 0.06), 0 18px 48px rgb(0 0 0 / 0.14);
+
+  /* Motion — one easing vocabulary, referenced by every primitive. */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
   --dur-fast: 150ms;
   --dur-base: 300ms;
   --dur-slow: 600ms;
-
-  --radius: 0.625rem;
-}
-
-/* Dark theme. Applied when the OS prefers dark (unless explicitly overridden
-   to light), or when data-theme="dark" is set on <html> by the theme toggle. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0d0d0c;
-    --bg-subtle: #151514;
-    --bg-inset: #1e1e1c;
-    --ink: #ededea;
-    --ink-muted: #8d8d85;
-    --ink-faint: #5c5c56;
-    --line: #262624;
-    --accent: #ededea;
-    --accent-contrast: #0d0d0c;
-  }
-}
-
-:root[data-theme="dark"] {
-  --bg: #0d0d0c;
-  --bg-subtle: #151514;
-  --bg-inset: #1e1e1c;
-  --ink: #ededea;
-  --ink-muted: #8d8d85;
-  --ink-faint: #5c5c56;
-  --line: #262624;
-  --accent: #ededea;
-  --accent-contrast: #0d0d0c;
 }
 
 @theme inline {
   --color-bg: var(--bg);
-  --color-bg-subtle: var(--bg-subtle);
+  --color-bg-raised: var(--bg-raised);
   --color-bg-inset: var(--bg-inset);
+  --color-bg-inverse: var(--bg-inverse);
+
   --color-ink: var(--ink);
   --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
   --color-ink-faint: var(--ink-faint);
+  --color-ink-inverse: var(--ink-inverse);
+  --color-ink-inverse-muted: var(--ink-inverse-muted);
+
   --color-line: var(--line);
-  --color-accent: var(--accent);
-  --color-accent-contrast: var(--accent-contrast);
+  --color-line-strong: var(--line-strong);
+  --color-positive: var(--positive);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-display);
 
   --text-xs: var(--text-xs);
   --text-sm: var(--text-sm);
@@ -101,14 +118,24 @@
   --text-lg: var(--text-lg);
   --text-xl: var(--text-xl);
   --text-2xl: var(--text-2xl);
-  --text-3xl: var(--text-3xl);
-  --color-positive: var(--positive);
+  --text-display-sm: var(--text-display-sm);
+  --text-display: var(--text-display);
+  --text-display-lg: var(--text-display-lg);
+  --text-wordmark: var(--text-wordmark);
 
-  --spacing-section: var(--space-section);
+  --tracking-display: var(--tracking-display);
+  --tracking-tight: var(--tracking-tight);
+
   --spacing-gutter: var(--space-gutter);
+  --spacing-section: var(--space-section);
   --container-max: var(--container-max);
 
-  --radius-DEFAULT: var(--radius);
+  --radius-pill: var(--radius-pill);
+  --radius-card: var(--radius-card);
+  --radius-chip: var(--radius-chip);
+
+  --shadow-raised: var(--shadow-raised);
+  --shadow-float: var(--shadow-float);
 
   --ease-out-expo: var(--ease-out-expo);
   --ease-out-quart: var(--ease-out-quart);
@@ -121,24 +148,29 @@
     /* Lenis drives smooth scroll; native smooth would fight it. */
     scroll-behavior: auto;
     -webkit-text-size-adjust: 100%;
+    /* The project cards animate from the hero into the grid below. That
+       transform can push them sideways mid-flight; clipping on the x axis
+       keeps it from producing a horizontal scrollbar. `clip` rather than
+       `hidden` because `hidden` on the root would make the element a scroll
+       container and break position: sticky further down the page. */
+    overflow-x: clip;
   }
 
   body {
     background: var(--bg);
     color: var(--ink);
     font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-    font-size: var(--text-base);
+    font-size: var(--text-md);
     line-height: 1.6;
+    overflow-x: clip;
     text-rendering: optimizeLegibility;
   }
 
-  /* Display type wants tight tracking and leading; body does not. */
   h1,
   h2,
   h3 {
-    font-family: var(--font-display), var(--font-sans), sans-serif;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
+    line-height: 1.05;
+    letter-spacing: var(--tracking-display);
     text-wrap: balance;
   }
 
@@ -190,9 +222,35 @@
   }
 }
 
+/* Set by the custom cursor once it has taken over, and only on devices with
+   a real pointer. Kept off the base layer so that a visitor whose browser
+   never runs the script is never left without a cursor. */
+.has-custom-cursor,
+.has-custom-cursor * {
+  cursor: none;
+}
+
 @utility container-page {
   width: 100%;
   max-width: var(--container-max);
   margin-inline: auto;
   padding-inline: var(--space-gutter);
+}
+
+/* The two vertical hairlines that mark the content column and run the full
+   height of the page. Drawn as a background gradient on a fixed overlay
+   rather than as borders on a wrapper, so no element needs to stretch and
+   nothing shifts when a section's height changes. */
+@utility column-rules {
+  background-image: linear-gradient(
+    to right,
+    transparent calc(50% - var(--container-max) / 2 - 0.5px),
+    var(--line) calc(50% - var(--container-max) / 2 - 0.5px),
+    var(--line) calc(50% - var(--container-max) / 2 + 0.5px),
+    transparent calc(50% - var(--container-max) / 2 + 0.5px),
+    transparent calc(50% + var(--container-max) / 2 - 0.5px),
+    var(--line) calc(50% + var(--container-max) / 2 - 0.5px),
+    var(--line) calc(50% + var(--container-max) / 2 + 0.5px),
+    transparent calc(50% + var(--container-max) / 2 + 0.5px)
+  );
 }

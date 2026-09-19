@@ -75,6 +75,22 @@ export const siteSettings = defineType({
       options: { accept: ".pdf" },
       description: "Optional PDF. A download link appears when one is set.",
     }),
+    defineField({
+      name: "bookingUrl",
+      title: "Booking link",
+      type: "url",
+      group: "contact",
+      description:
+        "Cal.com, Calendly or similar. Shown in the footer under “Call Me”.",
+    }),
+    defineField({
+      name: "bookingLabel",
+      title: "Booking link label",
+      type: "string",
+      group: "contact",
+      initialValue: "Book Now",
+      hidden: ({ parent }) => !parent?.bookingUrl,
+    }),
 
     defineField({
       name: "navLinks",

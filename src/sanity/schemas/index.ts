@@ -2,6 +2,7 @@ import type { SchemaTypeDefinition } from "sanity";
 
 // Objects
 import { captionedImage } from "./objects/captionedImage";
+import { clientLogo } from "./objects/clientLogo";
 import { figmaEmbed } from "./objects/figmaEmbed";
 import { imageBlock } from "./objects/imageBlock";
 import { imageGrid } from "./objects/imageGrid";
@@ -11,6 +12,8 @@ import { seo } from "./objects/seo";
 import { socialLink } from "./objects/socialLink";
 import { spacer } from "./objects/spacer";
 import { statRow } from "./objects/statRow";
+import { toolItem } from "./objects/toolItem";
+import { twoToneHeading } from "./objects/twoToneHeading";
 import { videoBlock } from "./objects/videoBlock";
 
 // Documents
@@ -56,4 +59,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   postBody,
   socialLink,
   seo,
+  twoToneHeading,
+  toolItem,
+  clientLogo,
 ];

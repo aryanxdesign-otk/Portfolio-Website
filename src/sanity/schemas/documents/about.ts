@@ -32,23 +32,28 @@ export const about = defineType({
       group: "content",
     }),
     defineField({
-      name: "skills",
-      title: "Skills",
-      type: "array",
-      group: "skills",
-      of: [{ type: "string" }],
-      options: { layout: "tags" },
-      description: "e.g. Product design, Design systems, User research",
+      name: "signature",
+      title: "Signature",
+      type: "image",
+      group: "content",
+      description:
+        "Optional. A transparent PNG or SVG, signed in black — it closes the " +
+        "about block on the home page.",
     }),
     defineField({
-      name: "tools",
-      title: "Tools",
+      name: "skills",
+      title: "Roles",
       type: "array",
       group: "skills",
       of: [{ type: "string" }],
       options: { layout: "tags" },
-      description: "e.g. Figma, Framer, After Effects",
+      description:
+        "The short line under your name, joined with a divider — " +
+        "e.g. Senior Product Designer, Vibe Coder, Builder",
     }),
+    // Tools live on the home page document, next to the section that renders
+    // them, because each one now carries an icon rather than being a bare
+    // string. Keeping a second list here would be a second source of truth.
     defineField({ name: "seo", title: "SEO", type: "seo", group: "seo" }),
   ],
   preview: {

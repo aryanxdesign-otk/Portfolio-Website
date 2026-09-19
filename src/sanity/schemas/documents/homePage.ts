@@ -3,8 +3,9 @@ import { defineField, defineType } from "sanity";
 /**
  * Singleton — the editorial content of the home page.
  *
- * Section headings live here rather than hardcoded in components, so the
- * copy can be tuned without a deploy.
+ * Every heading on this page is a `twoToneHeading`, because the muted-then-
+ * solid split is the page's main typographic device and hardcoding either
+ * half in a component would put copy back in the codebase.
  */
 export const homePage = defineType({
   name: "homePage",
@@ -12,86 +13,165 @@ export const homePage = defineType({
   type: "document",
   groups: [
     { name: "hero", title: "Hero", default: true },
-    { name: "sections", title: "Sections" },
+    { name: "clients", title: "Clients" },
+    { name: "work", title: "Work" },
+    { name: "tools", title: "Tools" },
+    { name: "about", title: "About block" },
+    { name: "cta", title: "Closing" },
     { name: "seo", title: "SEO" },
   ],
   fields: [
+    // --- Hero --------------------------------------------------------------
     defineField({
-      name: "heroHeadline",
+      name: "heroHeading",
       title: "Headline",
-      type: "text",
-      rows: 2,
+      type: "twoToneHeading",
       group: "hero",
-      description: "The big opening statement.",
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: "heroSubline",
-      title: "Subline",
-      type: "text",
-      rows: 2,
+      title: "Intro paragraph",
+      type: "simpleRichText",
       group: "hero",
+      description:
+        "Bold the phrases that should land — the weight alternates between " +
+        "bold and grey as you read, which is what gives this paragraph its " +
+        "rhythm. Everything unbolded is set in grey.",
     }),
     defineField({
-      name: "marqueeWords",
-      title: "Marquee words",
-      type: "array",
+      name: "heroPrimaryCta",
+      title: "Primary button",
+      type: "object",
       group: "hero",
-      of: [{ type: "string" }],
-      options: { layout: "tags" },
+      fields: [
+        defineField({
+          name: "label",
+          type: "string",
+          initialValue: "Get in touch",
+        }),
+        defineField({
+          name: "href",
+          type: "string",
+          description: "A path like /contact, or a mailto: link.",
+        }),
+      ],
+      options: { columns: 2 },
+    }),
+    defineField({
+      name: "heroVideoUrl",
+      title: "Showreel link",
+      type: "url",
+      group: "hero",
       description:
-        "Optional scrolling word strip. Leave empty to hide the marquee.",
+        "Optional. When set, a “Watch Video” button appears next to the " +
+        "primary one.",
+    }),
+
+    // --- Clients -----------------------------------------------------------
+    defineField({
+      name: "clients",
+      title: "Client logos",
+      type: "array",
+      group: "clients",
+      of: [{ type: "clientLogo" }],
+      description:
+        "Shown as a scrolling strip under the hero, and again above the " +
+        "footer. Drag to reorder.",
+    }),
+    defineField({
+      name: "clientsLabel",
+      title: "Label for the second strip",
+      type: "string",
+      group: "clients",
+      initialValue: "Trusted by",
+    }),
+
+    // --- Work --------------------------------------------------------------
+    defineField({
+      name: "workSectionHeading",
+      title: "Section heading",
+      type: "string",
+      group: "work",
+      initialValue: "Latest Projects",
     }),
     defineField({
       name: "featuredCaseStudies",
       title: "Featured work",
       type: "array",
-      group: "sections",
+      group: "work",
       of: [{ type: "reference", to: [{ type: "caseStudy" }] }],
       description:
         "Drag to reorder. This exact order is what visitors see. " +
-        "Leave empty to fall back to every case study marked as featured.",
+        "Leave empty to fall back to every case study marked as featured. " +
+        "The grid is built for four — more will still render, but the " +
+        "thumbnails that fly in from the hero are the first four.",
       validation: (rule) => rule.unique(),
     }),
     defineField({
-      name: "workSectionHeading",
-      title: "Work section heading",
+      name: "workAllLabel",
+      title: "“See all” link label",
       type: "string",
-      group: "sections",
-      initialValue: "Selected work",
+      group: "work",
+      initialValue: "All projects",
+    }),
+
+    // --- Tools -------------------------------------------------------------
+    defineField({
+      name: "toolsHeading",
+      title: "Section heading",
+      type: "twoToneHeading",
+      group: "tools",
     }),
     defineField({
-      name: "playgroundSectionHeading",
-      title: "Playground section heading",
+      name: "toolsNote",
+      title: "Note",
       type: "string",
-      group: "sections",
-      initialValue: "Playground",
+      group: "tools",
+      description: "The small line above the icons.",
     }),
     defineField({
-      name: "testimonialsSectionHeading",
-      title: "Testimonials section heading",
-      type: "string",
-      group: "sections",
-      initialValue: "Kind words",
+      name: "tools",
+      title: "Tools",
+      type: "array",
+      group: "tools",
+      of: [{ type: "toolItem" }],
     }),
+
+    // --- About block -------------------------------------------------------
+    defineField({
+      name: "aboutHeading",
+      title: "Section heading",
+      type: "twoToneHeading",
+      group: "about",
+    }),
+
+    // --- Closing -----------------------------------------------------------
     defineField({
       name: "ctaHeading",
-      title: "Closing CTA heading",
-      type: "string",
-      group: "sections",
-      initialValue: "Let's work together",
+      title: "Closing heading",
+      type: "twoToneHeading",
+      group: "cta",
+      description: "The large line at the top of the footer.",
     }),
     defineField({
-      name: "ctaText",
-      title: "Closing CTA text",
-      type: "text",
-      rows: 2,
-      group: "sections",
+      name: "footerWordmark",
+      title: "Footer wordmark",
+      type: "string",
+      group: "cta",
+      description:
+        "The oversized word that bleeds off the bottom of the page. One " +
+        "word reads best.",
+      initialValue: "DESIGN",
     }),
+
     defineField({ name: "seo", title: "SEO", type: "seo", group: "seo" }),
   ],
   preview: {
-    select: { title: "heroHeadline" },
-    prepare: ({ title }) => ({ title: "Home page", subtitle: title }),
+    select: { lead: "heroHeading.lead", rest: "heroHeading.rest" },
+    prepare: ({ lead, rest }) => ({
+      title: "Home page",
+      subtitle: [lead, rest].filter(Boolean).join(" "),
+    }),
   },
 });

@@ -1,8 +1,14 @@
-import { FadeIn } from "@/components/motion/FadeIn";
-import { Container } from "@/components/ui/Container";
-import { ListRow } from "@/components/ui/ListRow";
-import { Prose } from "@/components/ui/Prose";
-import { StatusDot } from "@/components/ui/StatusDot";
+import { AboutBlock } from "@/components/sections/AboutBlock";
+import { Hero } from "@/components/sections/Hero";
+import { LogoMarquee } from "@/components/sections/LogoMarquee";
+import {
+  ProjectShowcase,
+  type ShowcaseProject,
+} from "@/components/sections/ProjectShowcase";
+import { Tools } from "@/components/sections/Tools";
+import type { WorkHistoryItem } from "@/components/sections/WorkHistory";
+import { MediaPlaceholder } from "@/components/ui/MediaPlaceholder";
+import { SanityImage } from "@/components/ui/SanityImage";
 import {
   getAbout,
   getCaseStudies,
@@ -10,8 +16,8 @@ import {
   getHomePage,
   getSiteSettings,
 } from "@/sanity/lib/content";
-import { seedAboutParagraphs } from "@/sanity/lib/seed";
 
+/** "2023 — 2025", "2026 — Present", or just "2026" for a single year. */
 function formatRange(
   start?: string | null,
   end?: string | null,
@@ -24,27 +30,8 @@ function formatRange(
   return from === to ? from : `${from} — ${to}`;
 }
 
-/** A section with a small mono label, matching the text-led layout. */
-function Block({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  const id = label.toLowerCase().replace(/\s+/g, "-");
-  return (
-    <section aria-labelledby={id} className="mt-14 md:mt-20">
-      <h2
-        id={id}
-        className="text-ink-faint mb-2 font-mono text-xs tracking-widest uppercase"
-      >
-        {label}
-      </h2>
-      {children}
-    </section>
-  );
-}
+/** The grid is built for four; the rest live on the work index. */
+const FEATURED_LIMIT = 4;
 
 export default async function Home() {
   const [home, about, caseStudies, experiences, settings] = await Promise.all([
@@ -55,104 +42,142 @@ export default async function Home() {
     getSiteSettings(),
   ]);
 
+  // Explicit featured list if the editor set one, otherwise the newest work.
+  const source = home?.featured?.length ? home.featured : caseStudies;
+  const featured = source.slice(0, FEATURED_LIMIT);
+
+  const projects: ShowcaseProject[] = featured.map((project) => ({
+    id: project._id,
+    title: project.title ?? "",
+    meta: project.roles?.length ? project.roles.join("  |  ") : null,
+    href: project.slug ? `/work/${project.slug}` : null,
+  }));
+
+  const media = featured.map((project) =>
+    project.coverImage ? (
+      <SanityImage
+        key={project._id}
+        image={project.coverImage}
+        alt={project.coverImage.alt ?? project.title ?? ""}
+        fill
+        sizes="(min-width: 640px) 45vw, 90vw"
+        className="h-full w-full object-cover"
+      />
+    ) : (
+      <MediaPlaceholder key={project._id} label={project.title} />
+    ),
+  );
+
+  const clients = home?.clients ?? [];
+  const tools = home?.tools ?? [];
+
+  const history: WorkHistoryItem[] = experiences.map((item) => ({
+    id: item._id,
+    company: item.company ?? "",
+    role: item.role ?? null,
+    range: formatRange(item.startDate, item.endDate, item.isCurrent),
+  }));
+
   const showStatus =
     settings?.availabilityStatus && settings.availabilityStatus !== "hidden";
 
   return (
-    <main id="main" className="flex-1">
-      <Container className="pt-8 pb-(--space-section) md:pt-14">
-        {/* Intro */}
-        <FadeIn y={12}>
-          {showStatus ? (
-            <p className="text-ink-muted mb-6 flex items-center gap-2 font-mono text-xs">
-              <StatusDot
-                tone={
-                  settings.availabilityStatus === "unavailable"
-                    ? "muted"
-                    : "positive"
-                }
-              />
-              {settings.availabilityNote ?? "Available for work"}
-            </p>
-          ) : null}
+    <main id="main" className="relative z-10 flex-1">
+      <Hero
+        heading={home?.heroHeading ?? null}
+        subline={home?.heroSubline}
+        primaryCta={home?.heroPrimaryCta}
+        videoUrl={home?.heroVideoUrl}
+        availabilityNote={
+          showStatus
+            ? (settings.availabilityNote ?? "Available for work")
+            : null
+        }
+        availabilityTone={
+          settings?.availabilityStatus === "unavailable" ? "muted" : "positive"
+        }
+      />
 
-          <h1 className="max-w-[20ch] text-2xl font-medium">
-            {home?.heroHeadline}
-          </h1>
+      {clients.length > 0 ? (
+        <section aria-label="Clients" className="border-line border-t py-9">
+          <div className="container-page">
+            <LogoMarquee
+              logos={clients}
+              media={clients.map((client) =>
+                client.logo ? (
+                  <SanityImage
+                    key={client.name}
+                    image={client.logo}
+                    alt={client.name ?? ""}
+                    width={140}
+                    height={32}
+                    className="h-8 w-auto object-contain"
+                  />
+                ) : null,
+              )}
+            />
+          </div>
+        </section>
+      ) : null}
 
-          {home?.heroSubline ? (
-            <Prose className="mt-5 max-w-[60ch]">
-              <p>{home.heroSubline}</p>
-            </Prose>
-          ) : null}
-        </FadeIn>
+      <ProjectShowcase
+        heading={home?.workSectionHeading ?? "Latest Projects"}
+        allLabel={home?.workAllLabel}
+        allHref="/work"
+        projects={projects}
+        media={media}
+      />
 
-        {/* Experience — roles held */}
-        {experiences.length > 0 ? (
-          <Block label="Experience">
-            <div>
-              {experiences.map((item) => (
-                <ListRow
-                  key={item._id}
-                  title={item.company ?? ""}
-                  description={item.role}
-                  meta={formatRange(
-                    item.startDate,
-                    item.endDate,
-                    item.isCurrent,
-                  )}
-                  href={item.url}
-                  external={Boolean(item.url)}
-                />
-              ))}
-            </div>
-          </Block>
-        ) : null}
+      <Tools
+        heading={home?.toolsHeading ?? null}
+        note={home?.toolsNote}
+        tools={tools}
+        icons={tools.map((tool) =>
+          tool.icon ? (
+            <SanityImage
+              key={tool.name}
+              image={tool.icon}
+              alt=""
+              width={24}
+              height={24}
+              className="size-6 object-contain"
+            />
+          ) : null,
+        )}
+      />
 
-        {/* Projects */}
-        {caseStudies.length > 0 ? (
-          <Block label={home?.workSectionHeading ?? "Projects"}>
-            <div>
-              {caseStudies.map((project) => (
-                <ListRow
-                  key={project._id}
-                  title={project.title ?? ""}
-                  description={project.summary}
-                  meta={project.year ? String(project.year) : null}
-                  href={project.slug ? `/work/${project.slug}` : null}
-                />
-              ))}
-            </div>
-          </Block>
-        ) : null}
-
-        {/* About */}
-        <Block label="About">
-          <Prose className="max-w-[62ch]">
-            {seedAboutParagraphs.map((paragraph) => (
-              <p key={paragraph.slice(0, 32)}>{paragraph}</p>
-            ))}
-          </Prose>
-        </Block>
-
-        {/* Tools */}
-        {about?.tools && about.tools.length > 0 ? (
-          <Block label="Tools">
-            <ul className="text-ink-muted flex flex-wrap gap-x-2 gap-y-1.5 text-sm">
-              {about.tools.map((tool, index) => (
-                <li key={tool} className="flex items-center gap-2">
-                  {tool}
-                  {index < (about.tools?.length ?? 0) - 1 ? (
-                    <span aria-hidden="true" className="text-ink-faint">
-                      ·
-                    </span>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
-          </Block>
-        ) : null}
-      </Container>
+      <AboutBlock
+        heading={home?.aboutHeading ?? null}
+        name={settings?.name ?? ""}
+        roles={about?.skills ?? []}
+        bio={about?.bio}
+        portrait={
+          about?.portrait ? (
+            <SanityImage
+              image={about.portrait}
+              alt={about.portrait.alt ?? settings?.name ?? ""}
+              fill
+              sizes="(min-width: 768px) 30vw, 90vw"
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <MediaPlaceholder label="Portrait" />
+          )
+        }
+        signature={
+          about?.signature ? (
+            <SanityImage
+              image={about.signature}
+              alt=""
+              width={160}
+              height={64}
+              className="h-auto w-full object-contain"
+            />
+          ) : null
+        }
+        socials={settings?.socials ?? []}
+        experiences={history}
+      />
     </main>
   );
 }
