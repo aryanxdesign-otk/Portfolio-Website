@@ -27,6 +27,7 @@ export const seedSiteSettings = {
   navLinks: [
     { label: "Work", href: "/work" },
     { label: "About", href: "/about" },
+    { label: "Lab", href: "/lab" },
   ],
   footerNote: null,
   defaultSeo: null,
@@ -53,7 +54,8 @@ export const seedCaseStudies = [
     _id: "seed-fireplace-pro",
     title: "Fireplace Pro",
     slug: "fireplace-pro",
-    summary: "Pro trading terminal.",
+    summary: "Pro trading terminal for active traders.",
+    category: "case-studies",
     client: "Fireplace",
     roles: ["Product design"],
     year: 2026,
@@ -68,6 +70,7 @@ export const seedCaseStudies = [
     title: "Brahma.Fi",
     slug: "brahma-fi",
     summary: "Prediction markets. Acquired by Polymarket.",
+    category: "case-studies",
     client: "Brahma.Fi",
     roles: ["Product design"],
     year: 2025,
@@ -82,6 +85,7 @@ export const seedCaseStudies = [
     title: "Obvious",
     slug: "obvious",
     summary: "Security first by design.",
+    category: "brand",
     client: "Obvious",
     roles: ["Product design"],
     year: 2025,
@@ -92,6 +96,13 @@ export const seedCaseStudies = [
     thumbnailVideoUrl: null,
   },
 ];
+
+/** Counts for the home page card badges while running on seed content. */
+export const seedCategoryCounts = {
+  caseStudies: 2,
+  microInteractions: 0,
+  brand: 1,
+};
 
 export const seedExperiences = [
   {

@@ -7,40 +7,42 @@
 --------------------------------------------------------------------------- */
 
 :root {
-  /* Surfaces & ink — near-black on near-white, warm-shifted off pure grey */
-  --bg: #fcfcfc;
-  --bg-subtle: #f4f4f3;
-  --bg-inset: #ebebe9;
+  /* The page sits on a soft grey; content lives on a white card floating
+     above it. Two surfaces, not one — this is what gives the reference
+     layout its framed feel. */
+  --page: #ededeb;
+  --bg: #ffffff;
+  --bg-subtle: #f6f6f5;
+  --bg-inset: #eeeeec;
   --ink: #16150f;
   --ink-muted: #6a6a63;
   --ink-faint: #9a9a92;
-  --line: #e4e4e0;
+  --line: #e6e6e2;
 
+  /* The header CTA. Set this to an orange to match the reference — it is
+     the only place the accent appears, so one value changes the whole
+     personality of the page. Defaults to Aryan's black-pill treatment. */
   --accent: #16150f;
-  --accent-contrast: #fcfcfc;
+  --accent-ink: #ffffff;
   /* Availability dot, from the Framer design */
   --positive: #12b33f;
 
   --font-display: var(--font-geist-sans);
 
-  /* Type scale. A text-led site wants a short, tight scale — the jump from
-     body to the largest heading is deliberately small. Fluid between a
-     320px and 1440px viewport. */
   --text-xs: 0.75rem;
   --text-sm: 0.8125rem;
   --text-base: 0.9375rem;
   --text-md: 1rem;
   --text-lg: clamp(1.0625rem, 1rem + 0.3vw, 1.125rem);
   --text-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
-  --text-2xl: clamp(1.75rem, 1.5rem + 1.2vw, 2.25rem);
-  --text-3xl: clamp(2.25rem, 1.8rem + 2.2vw, 3rem);
+  /* The hero statement — large, but it is a paragraph, not a display line. */
+  --text-2xl: clamp(1.5rem, 1.1rem + 1.9vw, 2.375rem);
+  --text-3xl: clamp(2rem, 1.5rem + 2.4vw, 3rem);
 
-  /* Rhythm. The reading column is the frame for everything. */
-  --space-section: clamp(3rem, 2rem + 4vw, 4.5rem);
-  --space-gutter: clamp(1.5rem, 1rem + 2.5vw, 2rem);
-  --container-max: 40rem;
+  --space-section: clamp(3.5rem, 2rem + 6vw, 7rem);
+  --space-gutter: clamp(1.25rem, 0.5rem + 3.2vw, 3.5rem);
+  --container-max: 78rem;
 
-  /* Motion — one easing vocabulary, referenced by every primitive */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
@@ -48,35 +50,40 @@
   --dur-base: 300ms;
   --dur-slow: 600ms;
 
-  --radius: 0.625rem;
+  --radius: 0.75rem;
+  --radius-card: 1.25rem;
+  /* The outer frame */
+  --radius-frame: 1.75rem;
 }
 
 /* Dark theme. Applied when the OS prefers dark (unless explicitly overridden
    to light), or when data-theme="dark" is set on <html> by the theme toggle. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0d0d0c;
-    --bg-subtle: #151514;
-    --bg-inset: #1e1e1c;
+    --page: #0a0a09;
+    --bg: #131312;
+    --bg-subtle: #1a1a18;
+    --bg-inset: #232321;
     --ink: #ededea;
     --ink-muted: #8d8d85;
     --ink-faint: #5c5c56;
-    --line: #262624;
+    --line: #2a2a27;
     --accent: #ededea;
-    --accent-contrast: #0d0d0c;
+    --accent-ink: #131312;
   }
 }
 
 :root[data-theme="dark"] {
-  --bg: #0d0d0c;
-  --bg-subtle: #151514;
-  --bg-inset: #1e1e1c;
+  --page: #0a0a09;
+  --bg: #131312;
+  --bg-subtle: #1a1a18;
+  --bg-inset: #232321;
   --ink: #ededea;
   --ink-muted: #8d8d85;
   --ink-faint: #5c5c56;
-  --line: #262624;
+  --line: #2a2a27;
   --accent: #ededea;
-  --accent-contrast: #0d0d0c;
+  --accent-ink: #131312;
 }
 
 @theme inline {
@@ -87,8 +94,9 @@
   --color-ink-muted: var(--ink-muted);
   --color-ink-faint: var(--ink-faint);
   --color-line: var(--line);
+  --color-page: var(--page);
   --color-accent: var(--accent);
-  --color-accent-contrast: var(--accent-contrast);
+  --color-accent-ink: var(--accent-ink);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -109,6 +117,8 @@
   --container-max: var(--container-max);
 
   --radius-DEFAULT: var(--radius);
+  --radius-card: var(--radius-card);
+  --radius-frame: var(--radius-frame);
 
   --ease-out-expo: var(--ease-out-expo);
   --ease-out-quart: var(--ease-out-quart);
@@ -124,7 +134,7 @@
   }
 
   body {
-    background: var(--bg);
+    background: var(--page);
     color: var(--ink);
     font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
     font-size: var(--text-base);

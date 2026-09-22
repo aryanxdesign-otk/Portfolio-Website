@@ -33,6 +33,7 @@ const CASE_STUDY_CARD = /* groq */ `
   title,
   "slug": slug.current,
   summary,
+  category,
   client,
   roles,
   year,
@@ -222,6 +223,13 @@ export const postBySlugQuery = defineQuery(`
     }
   }
 `);
+
+/** Item counts per category, for the badges on the home page cards. */
+export const categoryCountsQuery = defineQuery(`{
+  "caseStudies": count(*[_type == "caseStudy" && category == "case-studies"]),
+  "microInteractions": count(*[_type == "caseStudy" && category == "micro-interactions"]),
+  "brand": count(*[_type == "caseStudy" && category == "brand"])
+}`);
 
 /** Every URL the sitemap needs, in one round trip. */
 export const sitemapQuery = defineQuery(`{

@@ -2,6 +2,7 @@ import "server-only";
 
 import type {
   AboutQueryResult,
+  CategoryCountsQueryResult,
   CaseStudiesQueryResult,
   CaseStudyBySlugQueryResult,
   CaseStudySlugsQueryResult,
@@ -21,6 +22,7 @@ import * as q from "./queries";
 import {
   seedAbout,
   seedCaseStudies,
+  seedCategoryCounts,
   seedExperiences,
   seedHomePage,
   seedSiteSettings,
@@ -138,6 +140,14 @@ export function getPost(slug: string): Promise<PostBySlugQueryResult> {
     params: { slug },
     tags: ["post"],
     fallback: null,
+  });
+}
+
+export function getCategoryCounts(): Promise<CategoryCountsQueryResult> {
+  return sanityFetch({
+    query: q.categoryCountsQuery,
+    tags: ["caseStudy"],
+    fallback: seedCategoryCounts,
   });
 }
 
