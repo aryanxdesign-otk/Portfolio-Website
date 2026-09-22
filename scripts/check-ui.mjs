@@ -178,6 +178,76 @@ const go = async (page, path) => {
   await context.close();
 }
 
+// --- Category pages: back link, title, and the right blocks ---------------
+{
+  const [page, context] = await open({
+    viewport: { width: 1400, height: 1100 },
+  });
+
+  const cases = [
+    { category: "case-studies", title: "Design Case Studies", blocks: 2 },
+    { category: "brand", title: "Visual Design + Brand", blocks: 1 },
+    {
+      category: "micro-interactions",
+      title: "Front End Micro Interactions",
+      blocks: 0,
+    },
+  ];
+
+  for (const { category, title, blocks } of cases) {
+    await go(page, `/work?category=${category}`);
+    const h1 = (await page.locator("h1").first().textContent())?.trim();
+    const back = await page.locator('main a[href="/"]').first().isVisible();
+    const count = await page.locator("main ul li a[href^='/work/']").count();
+
+    h1 === title && back && count === blocks
+      ? ok(`${category}: titled, back link, ${blocks} block(s)`)
+      : bad(`${category}`, `title="${h1}" back=${back} blocks=${count}`);
+  }
+
+  // An unknown category must not 404 or render a blank page.
+  await go(page, "/work?category=nonsense");
+  const fallback = await page.locator("main ul li a[href^='/work/']").count();
+  fallback === 3
+    ? ok("unknown category falls back to showing everything")
+    : bad("unknown category fallback", `${fallback} blocks`);
+
+  await context.close();
+}
+
+// --- The footer is unified across every page ------------------------------
+{
+  const [page, context] = await open({
+    viewport: { width: 1400, height: 1100 },
+  });
+  for (const path of ["/", "/work", "/about", "/lab", "/work/fireplace-pro"]) {
+    await go(page, path);
+    const footer = await page.evaluate(() => {
+      const el = document.querySelector("footer");
+      if (!el) return null;
+      const text = el.textContent ?? "";
+      return {
+        trustedBy: text.includes("Trusted by"),
+        heading: text.includes("Lets craft"),
+        email: Boolean(el.querySelector('a[href^="mailto:"]')),
+        wordmark: Boolean(
+          [...el.querySelectorAll('[aria-hidden="true"]')].find(
+            (n) => n.textContent?.trim() === "DESIGN",
+          ),
+        ),
+      };
+    });
+    footer &&
+    footer.trustedBy &&
+    footer.heading &&
+    footer.email &&
+    footer.wordmark
+      ? ok(`footer complete on ${path}`)
+      : bad(`footer on ${path}`, JSON.stringify(footer));
+  }
+  await context.close();
+}
+
 // --- Every route, desktop and phone ---------------------------------------
 const ROUTES = [
   "/",

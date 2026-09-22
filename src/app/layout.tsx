@@ -81,7 +81,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
 
         {/* The page sits on grey; everything else lives on this white card. */}
         <div className="mx-auto w-full max-w-(--container-max) p-3 md:p-6">
-          <div className="bg-bg relative flex min-h-[calc(100dvh-3rem)] flex-col rounded-(--radius-frame) shadow-[0_1px_2px_rgba(0,0,0,0.04),0_24px_60px_-30px_rgba(0,0,0,0.18)]">
+          <div className="bg-bg relative flex min-h-[calc(100dvh-3rem)] flex-col overflow-hidden rounded-(--radius-frame) shadow-[0_1px_2px_rgba(0,0,0,0.04),0_24px_60px_-30px_rgba(0,0,0,0.18)]">
             <SiteHeader
               name={name}
               navLinks={settings?.navLinks ?? []}
@@ -94,6 +94,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
               email={settings?.email}
               socials={settings?.socials ?? []}
               footerNote={settings?.footerNote}
+              clients={settings?.clients ?? []}
+              bookingUrl={settings?.bookingUrl}
+              wordmark={settings?.footerWordmark}
+              headingLead={settings?.footerHeadingLead}
+              headingRest={settings?.footerHeadingRest}
             />
           </div>
         </div>

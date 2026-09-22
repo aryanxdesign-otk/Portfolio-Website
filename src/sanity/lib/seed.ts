@@ -16,14 +16,30 @@ export const seedSiteSettings = {
   availabilityNote: "Available for Q3'26",
   email: "aryanxdesign@gmail.com",
   socials: [
-    { platform: "x", label: "X", url: "https://x.com/aryanxdesign" },
+    { platform: "x", label: "1,214", url: "https://x.com/aryanxdesign" },
     {
       platform: "linkedin",
       label: "LinkedIn",
       url: "https://linkedin.com/in/aryanchillal",
     },
+    {
+      platform: "instagram",
+      label: "Instagram",
+      url: "https://instagram.com/aryanxdesign",
+    },
   ],
   cvUrl: null,
+  bookingUrl: null,
+  clients: [
+    { name: "Itheum", url: null, logo: null },
+    { name: "Komet", url: null, logo: null },
+    { name: "Market", url: null, logo: null },
+    { name: "Pillow", url: null, logo: null },
+    { name: "Polygon", url: null, logo: null },
+  ],
+  footerWordmark: "DESIGN",
+  footerHeadingLead: "Lets craft",
+  footerHeadingRest: "incredible work together.",
   navLinks: [
     { label: "Work", href: "/work" },
     { label: "About", href: "/about" },

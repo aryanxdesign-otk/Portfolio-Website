@@ -1,22 +1,33 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
-import { ListRow } from "@/components/ui/ListRow";
+import { FadeIn } from "@/components/motion/FadeIn";
+import { BackLink } from "@/components/ui/BackLink";
 import { CategoryFilter } from "@/components/ui/CategoryFilter";
-import { getCategory, isCategory } from "@/sanity/categories";
+import { ProjectBlock } from "@/components/ui/ProjectBlock";
+import {
+  getCategory,
+  isCategory,
+  type CategoryValue,
+} from "@/sanity/categories";
 import { getCaseStudies } from "@/sanity/lib/content";
 
 export const metadata: Metadata = {
   title: "Work",
-  description: "Selected projects, micro interactions and visual design.",
+  description:
+    "Case studies, front end micro interactions, visual design and brand.",
 };
 
 /**
- * The filter comes from searchParams, which is request-time data. It is read
- * inside a Suspense boundary so the rest of the page still prerenders into
- * the static shell rather than the whole route turning dynamic.
+ * The category view.
+ *
+ * The category comes from the URL rather than component state, so each
+ * collection is a shareable page with its own title — reached from the home
+ * page decks — while still being one route to maintain. Read inside a
+ * Suspense boundary, since searchParams is request-time data and would
+ * otherwise force the whole route dynamic.
  */
-async function WorkList({
+async function WorkGrid({
   searchParams,
 }: Pick<PageProps<"/work">, "searchParams">) {
   const params = await searchParams;
@@ -24,36 +35,53 @@ async function WorkList({
     ? params.category[0]
     : params.category;
   const active = isCategory(raw) ? raw : null;
+  const category = getCategory(active ?? undefined);
 
   const projects = await getCaseStudies();
   const filtered = active
     ? projects.filter((project) => project.category === active)
     : projects;
 
-  const category = getCategory(active ?? undefined);
-
   return (
     <>
-      <CategoryFilter active={active} />
+      <header>
+        <BackLink>Home</BackLink>
+
+        <h1 className="mt-6 max-w-[20ch] text-2xl font-medium tracking-tight">
+          {category?.title ?? "All work"}
+        </h1>
+        <p className="text-ink-muted mt-3 max-w-[56ch] leading-relaxed">
+          {category?.description ??
+            "Everything in one place — case studies, interactions and brand."}
+        </p>
+
+        <div className="mt-10">
+          <CategoryFilter active={active} />
+        </div>
+      </header>
 
       {filtered.length === 0 ? (
-        <p className="text-ink-muted mt-10 text-sm">
+        <p className="text-ink-muted mt-14 text-sm">
           {category
             ? `No ${category.short} published yet.`
             : "No projects published yet."}
         </p>
       ) : (
-        <div className="mt-6">
-          {filtered.map((project) => (
-            <ListRow
-              key={project._id}
-              title={project.title ?? ""}
-              description={project.summary}
-              meta={project.year ? String(project.year) : null}
-              href={project.slug ? `/work/${project.slug}` : null}
-            />
+        <ul className="mt-12 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((project, index) => (
+            <FadeIn as="li" key={project._id} y={18} delay={(index % 3) * 0.07}>
+              <ProjectBlock
+                title={project.title ?? ""}
+                summary={project.summary}
+                year={project.year}
+                slug={project.slug}
+                cover={project.coverImage}
+                category={(project.category ?? "case-studies") as CategoryValue}
+                priority={index < 3}
+              />
+            </FadeIn>
           ))}
-        </div>
+        </ul>
       )}
     </>
   );
@@ -61,13 +89,13 @@ async function WorkList({
 
 export default function WorkIndex(props: PageProps<"/work">) {
   return (
-    <main id="main" className="flex-1 px-6 md:px-8">
-      <div className="mx-auto max-w-3xl pt-12 pb-(--space-section) md:pt-20">
-        <h1 className="mb-8 text-xl font-medium tracking-tight">Work</h1>
-        <Suspense fallback={<div className="h-64" />}>
-          <WorkList searchParams={props.searchParams} />
-        </Suspense>
-      </div>
+    <main
+      id="main"
+      className="flex-1 px-6 pt-12 pb-(--space-section) md:px-8 md:pt-16"
+    >
+      <Suspense fallback={<div className="h-[32rem]" />}>
+        <WorkGrid searchParams={props.searchParams} />
+      </Suspense>
     </main>
   );
 }

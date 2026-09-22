@@ -12,6 +12,7 @@ export const siteSettings = defineType({
     { name: "identity", title: "Identity", default: true },
     { name: "contact", title: "Contact" },
     { name: "nav", title: "Navigation" },
+    { name: "footer", title: "Footer" },
     { name: "seo", title: "Default SEO" },
   ],
   fields: [
@@ -74,6 +75,73 @@ export const siteSettings = defineType({
       group: "contact",
       options: { accept: ".pdf" },
       description: "Optional PDF. A download link appears when one is set.",
+    }),
+
+    defineField({
+      name: "bookingUrl",
+      title: "Booking link",
+      type: "url",
+      group: "contact",
+      description:
+        "Calendly, Cal.com or similar. The footer's \u201cCall Me\u201d column only " +
+        "appears when this is set.",
+    }),
+
+    defineField({
+      name: "clients",
+      title: "Trusted by",
+      type: "array",
+      group: "footer",
+      description:
+        "Companies shown in the strip above the footer. A logo is used when " +
+        "one is uploaded; otherwise the name is set in type.",
+      of: [
+        {
+          type: "object",
+          name: "client",
+          fields: [
+            defineField({
+              name: "name",
+              type: "string",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "logo",
+              type: "image",
+              description: "Optional. An SVG or transparent PNG works best.",
+            }),
+            defineField({ name: "url", type: "url" }),
+          ],
+          preview: { select: { title: "name", media: "logo" } },
+        },
+      ],
+    }),
+
+    defineField({
+      name: "footerWordmark",
+      title: "Footer wordmark",
+      type: "string",
+      group: "footer",
+      description:
+        "The oversized word across the bottom of every page. Short words " +
+        "read best \u2014 one or two syllables. Leave blank to hide it.",
+      validation: (rule) =>
+        rule.max(12).warning("Longer words get cut off on narrow screens."),
+    }),
+
+    defineField({
+      name: "footerHeadingLead",
+      title: "Footer heading \u2014 first line",
+      type: "string",
+      group: "footer",
+      description: "Set in white. e.g. \u201cLets craft\u201d",
+    }),
+    defineField({
+      name: "footerHeadingRest",
+      title: "Footer heading \u2014 second line",
+      type: "string",
+      group: "footer",
+      description: "Set in grey. e.g. \u201cincredible work together.\u201d",
     }),
 
     defineField({

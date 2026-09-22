@@ -250,6 +250,23 @@ export type SiteSettings = {
     media?: unknown;
     _type: "file";
   };
+  bookingUrl?: string;
+  clients?: Array<{
+    name?: string;
+    logo?: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
+    url?: string;
+    _type: "client";
+    _key: string;
+  }>;
+  footerWordmark?: string;
+  footerHeadingLead?: string;
+  footerHeadingRest?: string;
   navLinks?: Array<{
     label?: string;
     href?: string;
@@ -258,6 +275,22 @@ export type SiteSettings = {
   }>;
   footerNote?: string;
   defaultSeo?: Seo;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
 };
 
 export type CaseStudyReference = {
@@ -324,22 +357,6 @@ export type Experience = {
     _type: "image";
   };
   url?: string;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
 };
 
 export type Testimonial = {
@@ -556,12 +573,12 @@ export type AllSanitySchemaTypes =
   | ImageBlock
   | CaptionedImage
   | SiteSettings
+  | SanityImageCrop
+  | SanityImageHotspot
   | CaseStudyReference
   | HomePage
   | About
   | Experience
-  | SanityImageCrop
-  | SanityImageHotspot
   | Testimonial
   | Shot
   | Post
@@ -578,7 +595,7 @@ export type AllSanitySchemaTypes =
 
 // Source: src/sanity/lib/queries.ts
 // Variable: siteSettingsQuery
-// Query: *[_type == "siteSettings"][0] {    name,    tagline,    availabilityStatus,    availabilityNote,    email,    socials[] { platform, label, url },    "cvUrl": cvFile.asset->url,    navLinks[] { label, href },    footerNote,    defaultSeo {   title,  description,  noIndex,  ogImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } }  }
+// Query: *[_type == "siteSettings"][0] {    name,    tagline,    availabilityStatus,    availabilityNote,    email,    socials[] { platform, label, url },    "cvUrl": cvFile.asset->url,    bookingUrl,    clients[] { name, url, logo {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } },    footerWordmark,    footerHeadingLead,    footerHeadingRest,    navLinks[] { label, href },    footerNote,    defaultSeo {   title,  description,  noIndex,  ogImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } }  }
 export type SiteSettingsQueryResult = {
   name: string | null;
   tagline: string | null;
@@ -601,6 +618,32 @@ export type SiteSettingsQueryResult = {
     url: string | null;
   }> | null;
   cvUrl: string | null;
+  bookingUrl: string | null;
+  clients: Array<{
+    name: string | null;
+    url: string | null;
+    logo: {
+      asset: {
+        _id: string;
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+          dimensions: {
+            width: number | null;
+            height: number | null;
+            aspectRatio: number | null;
+          } | null;
+        } | null;
+      } | null;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+  }> | null;
+  footerWordmark: string | null;
+  footerHeadingLead: string | null;
+  footerHeadingRest: string | null;
   navLinks: Array<{
     label: string | null;
     href: string | null;
@@ -1396,7 +1439,7 @@ export type SitemapQueryResult = {
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '\n  *[_type == "siteSettings"][0] {\n    name,\n    tagline,\n    availabilityStatus,\n    availabilityNote,\n    email,\n    socials[] { platform, label, url },\n    "cvUrl": cvFile.asset->url,\n    navLinks[] { label, href },\n    footerNote,\n    defaultSeo { \n  title,\n  description,\n  noIndex,\n  ogImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n }\n  }\n': SiteSettingsQueryResult;
+    '\n  *[_type == "siteSettings"][0] {\n    name,\n    tagline,\n    availabilityStatus,\n    availabilityNote,\n    email,\n    socials[] { platform, label, url },\n    "cvUrl": cvFile.asset->url,\n    bookingUrl,\n    clients[] { name, url, logo { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n } },\n    footerWordmark,\n    footerHeadingLead,\n    footerHeadingRest,\n    navLinks[] { label, href },\n    footerNote,\n    defaultSeo { \n  title,\n  description,\n  noIndex,\n  ogImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n }\n  }\n': SiteSettingsQueryResult;
     '\n  *[_type == "homePage"][0] {\n    heroHeadline,\n    heroSubline,\n    marqueeWords,\n    workSectionHeading,\n    playgroundSectionHeading,\n    testimonialsSectionHeading,\n    ctaHeading,\n    ctaText,\n    seo { \n  title,\n  description,\n  noIndex,\n  ogImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n },\n    // Explicit order if set, otherwise everything flagged as featured.\n    "featured": coalesce(\n      featuredCaseStudies[]-> { \n  _id,\n  title,\n  "slug": slug.current,\n  summary,\n  category,\n  client,\n  roles,\n  year,\n  accentColor,\n  featured,\n  order,\n  coverImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n },\n  "thumbnailVideoUrl": thumbnailVideo.asset->url\n },\n      *[_type == "caseStudy" && featured == true]\n        | order(coalesce(order, 9999) asc, year desc) { \n  _id,\n  title,\n  "slug": slug.current,\n  summary,\n  category,\n  client,\n  roles,\n  year,\n  accentColor,\n  featured,\n  order,\n  coverImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n },\n  "thumbnailVideoUrl": thumbnailVideo.asset->url\n }\n    )\n  }\n': HomePageQueryResult;
     '\n  *[_type == "caseStudy" && defined(slug.current)]\n    | order(coalesce(order, 9999) asc, year desc) {\n    \n  _id,\n  title,\n  "slug": slug.current,\n  summary,\n  category,\n  client,\n  roles,\n  year,\n  accentColor,\n  featured,\n  order,\n  coverImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n },\n  "thumbnailVideoUrl": thumbnailVideo.asset->url\n\n  }\n': CaseStudiesQueryResult;
     '\n  *[_type == "caseStudy" && defined(slug.current)].slug.current\n': CaseStudySlugsQueryResult;

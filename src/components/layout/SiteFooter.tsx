@@ -1,5 +1,10 @@
 import { cacheLife } from "next/cache";
 
+import type { SanityImageWithMeta } from "@/sanity/lib/image";
+
+import { SocialIcon } from "./SocialIcon";
+import { TrustedBy } from "./TrustedBy";
+
 /**
  * The copyright year.
  *
@@ -13,83 +18,156 @@ async function getCurrentYear(): Promise<number> {
   return new Date().getFullYear();
 }
 
-const ICONS: Record<string, string> = {
-  x: "M13.3 10.7 20.4 2h-1.7l-6.2 7.6L7.6 2H2l7.5 11L2 22h1.7l6.5-8L15.4 22H21l-7.7-11.3Zm-2.3 2.8-.8-1.1L4.3 3.3h2.6l4.8 7 .8 1.1 6.3 9h-2.6l-5.2-7.6Z",
-  linkedin:
-    "M6.9 21H3.3V9.3h3.6V21ZM5.1 7.7a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2ZM21 21h-3.6v-5.7c0-1.4 0-3.1-1.9-3.1s-2.2 1.5-2.2 3V21H9.7V9.3h3.4v1.6h.1a3.8 3.8 0 0 1 3.4-1.9c3.6 0 4.3 2.4 4.3 5.5V21Z",
-  github:
-    "M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8 0-.7.3-1.1.6-1.4-2.2-.2-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7 0-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.6 5 .3.3.7 1 .7 2v2.9c0 .3.1.6.7.5A10 10 0 0 0 12 2Z",
-  instagram:
-    "M12 2.2c3.2 0 3.6 0 4.9.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.9c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.9.1s-3.6 0-4.9-.1c-3.2-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9C2.4 3.9 4 2.3 7.1 2.2c1.3-.1 1.7-.1 4.9-.1Zm0 5.4a4.4 4.4 0 1 0 0 8.8 4.4 4.4 0 0 0 0-8.8Zm0 7.2a2.8 2.8 0 1 1 0-5.6 2.8 2.8 0 0 1 0 5.6Zm5.6-7.4a1 1 0 1 1-2.1 0 1 1 0 0 1 2.1 0Z",
-  dribbble:
-    "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.6 4.6a8.4 8.4 0 0 1 1.9 5.2c-.3-.1-3.1-.6-5.9-.3l-.4-1c2.7-1.1 4-2.7 4.4-3.9ZM12 3.5c2 0 3.9.8 5.3 2-.3.5-1.4 2-4.1 3a43 43 0 0 0-3-4.7 8 8 0 0 1 1.8-.3Zm-3.4.9c.4.5 1.9 2.7 2.9 4.6-3.8 1-7.1 1-7.5 1a8.5 8.5 0 0 1 4.6-5.6ZM3.5 12v-.3c.3 0 4.3.1 8.3-1.1l.6 1.1c-3.4 1-5.2 4-5.6 4.6A8.5 8.5 0 0 1 3.5 12Zm8.5 8.5c-1.9 0-3.7-.7-5.1-1.8.3-.6 1.7-3.3 5.5-4.6 1.5 3.9 2.1 7.2 2.3 8-.9.3-1.8.4-2.7.4Zm4.2-1.2c-.1-.8-.7-3.9-2.1-7.7 2.6-.4 4.9.3 5.2.4a8.5 8.5 0 0 1-3.1 7.3Z",
+type Social = {
+  platform: string | null;
+  label: string | null;
+  url: string | null;
 };
 
-function SocialIcon({ platform }: { platform: string }) {
-  const path = ICONS[platform];
-  if (!path) return null;
+/** A circular social button, optionally carrying a follower count. */
+function SocialPill({ social }: { social: Social }) {
+  if (!social.url || !social.platform) return null;
+  const name = social.label ?? social.platform;
+
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="size-4">
-      <path d={path} />
-    </svg>
+    <a
+      href={social.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={name}
+      className="border-bg/20 text-bg hover:bg-bg hover:text-ink inline-flex items-center gap-1.5 rounded-full border px-2.5 py-2 text-xs transition-colors duration-200"
+    >
+      <SocialIcon platform={social.platform} className="size-3.5" />
+      {/* Labels that are a bare count sit beside the icon; names do not, or
+          the row becomes a wall of text. */}
+      {social.label && /^[\d,]+$/.test(social.label) ? (
+        <span className="tabular-nums">{social.label}</span>
+      ) : null}
+    </a>
   );
 }
 
+function Column({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <h3 className="text-bg/45 text-sm">{label}</h3>
+      <div className="mt-2">{children}</div>
+    </div>
+  );
+}
+
+/**
+ * The footer, rendered on every page from the root layout.
+ *
+ * Three bands: the client strip on the light surface, a dark contact block,
+ * and an oversized wordmark bleeding off the bottom edge.
+ */
 export async function SiteFooter({
   email,
   socials,
   footerNote,
   name,
+  clients,
+  bookingUrl,
+  wordmark,
+  headingLead,
+  headingRest,
 }: {
   email?: string | null;
-  socials: {
-    platform: string | null;
-    label: string | null;
-    url: string | null;
-  }[];
+  socials: Social[];
   footerNote?: string | null;
   name: string;
+  clients: {
+    name: string | null;
+    url: string | null;
+    logo: SanityImageWithMeta | null;
+  }[];
+  bookingUrl?: string | null;
+  wordmark?: string | null;
+  headingLead?: string | null;
+  headingRest?: string | null;
 }) {
   const year = await getCurrentYear();
 
   return (
-    <footer className="border-line mt-auto flex flex-col items-center gap-5 border-t px-6 py-6 text-sm md:flex-row md:justify-between md:px-8">
-      <p className="text-ink-muted order-3 md:order-1">
-        {footerNote ?? `© ${year} — ${name}`}
-      </p>
+    <footer className="mt-auto">
+      <TrustedBy clients={clients} />
 
-      <ul className="order-1 flex items-center gap-1 md:order-2">
-        {socials.map((social) =>
-          social.url && social.platform ? (
-            <li key={social.url}>
+      {/* Dark band. Rounded to sit inside the page frame's bottom corners. */}
+      <div className="bg-ink text-bg overflow-hidden rounded-b-(--radius-frame) px-6 pt-14 md:px-8 md:pt-20">
+        {headingLead || headingRest ? (
+          <h2 className="max-w-[16ch] text-3xl leading-[1.08] font-medium tracking-tight">
+            {headingLead ? (
+              <span className="text-bg">{headingLead}</span>
+            ) : null}
+            {headingLead && headingRest ? " " : null}
+            {headingRest ? (
+              <span className="text-bg/45">{headingRest}</span>
+            ) : null}
+          </h2>
+        ) : null}
+
+        <div className="mt-12 flex flex-wrap gap-x-16 gap-y-8">
+          {email ? (
+            <Column label="Email">
               <a
-                href={social.url}
+                href={`mailto:${email}`}
+                className="decoration-bg/30 hover:decoration-bg underline underline-offset-4 transition-colors"
+              >
+                {email}
+              </a>
+            </Column>
+          ) : null}
+
+          {bookingUrl ? (
+            <Column label="Call Me">
+              <a
+                href={bookingUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={social.label ?? social.platform}
-                className="text-ink-faint hover:text-ink hover:bg-bg-inset grid size-8 place-items-center rounded-full transition-colors"
+                className="decoration-bg/30 hover:decoration-bg underline underline-offset-4 transition-colors"
               >
-                <SocialIcon platform={social.platform} />
+                Book Now
               </a>
-            </li>
-          ) : null,
-        )}
-      </ul>
+            </Column>
+          ) : null}
 
-      {email ? (
-        <a
-          href={`mailto:${email}`}
-          className="group text-ink order-2 inline-flex items-center gap-1 transition-colors md:order-3"
-        >
-          {email}
-          <span
+          {socials.length > 0 ? (
+            <Column label="Social">
+              <ul className="flex flex-wrap items-center gap-2">
+                {socials.map((social) => (
+                  <li key={social.url}>
+                    <SocialPill social={social} />
+                  </li>
+                ))}
+              </ul>
+            </Column>
+          ) : null}
+        </div>
+
+        <p className="border-bg/15 text-bg/40 mt-12 border-t pt-6 text-sm">
+          {footerNote ?? `© ${year} — ${name}`}
+        </p>
+
+        {/* Oversized wordmark. Sized in vw so it spans the frame at any
+            width, and cropped by the band's overflow so it reads as bleeding
+            off the page rather than as a word that happens to be large. */}
+        {wordmark ? (
+          <p
             aria-hidden="true"
-            className="text-ink-faint transition-transform duration-300 ease-(--ease-out-expo) group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            className="text-bg -mb-[0.22em] pt-8 text-center leading-[0.78] font-semibold tracking-[-0.04em] select-none"
+            style={{ fontSize: "clamp(4rem, 19vw, 20rem)" }}
           >
-            ↗
-          </span>
-        </a>
-      ) : null}
+            {wordmark}
+          </p>
+        ) : null}
+      </div>
     </footer>
   );
 }

@@ -55,6 +55,11 @@ export const siteSettingsQuery = defineQuery(`
     email,
     socials[] { platform, label, url },
     "cvUrl": cvFile.asset->url,
+    bookingUrl,
+    clients[] { name, url, logo { ${IMAGE_FIELDS} } },
+    footerWordmark,
+    footerHeadingLead,
+    footerHeadingRest,
     navLinks[] { label, href },
     footerNote,
     defaultSeo { ${SEO_FIELDS} }
