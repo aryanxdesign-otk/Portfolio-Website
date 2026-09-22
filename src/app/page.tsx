@@ -65,7 +65,7 @@ export default async function Home() {
           {home?.workSectionHeading ?? "Work"}
         </h2>
 
-        <div className="grid gap-6 md:grid-cols-3 md:gap-5">
+        <div className="grid gap-14 md:grid-cols-3 md:gap-8">
           {CATEGORIES.map((category, index) => (
             <FadeIn key={category.value} y={20} delay={index * 0.08}>
               <StackCard

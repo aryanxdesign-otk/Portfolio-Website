@@ -91,53 +91,53 @@ export function StackCard({
     >
       <Link
         href={href as never}
-        className="focus-visible:outline-ink block rounded-(--radius-card) focus-visible:outline-2 focus-visible:outline-offset-4"
+        className="focus-visible:outline-ink block rounded-(--radius-card) focus-visible:outline-2 focus-visible:outline-offset-8"
         aria-label={`${title} — ${count} ${count === 1 ? "item" : "items"}`}
       >
-        <div className="bg-bg-subtle border-line relative overflow-hidden rounded-(--radius-card) border">
-          {/* Folder tab label */}
-          <div className="flex items-center gap-2 px-5 pt-5 pb-3">
-            <span className="text-ink-faint font-mono text-sm">
-              work/
-              <span className="text-ink-muted">{path}</span>
-            </span>
-            <span className="bg-bg-inset text-ink-muted rounded-full px-2 py-0.5 font-mono text-xs tabular-nums">
-              {count}
-            </span>
-          </div>
+        {/* Label */}
+        <div className="mb-5 flex items-center gap-2">
+          <span className="text-ink-faint font-mono text-sm">
+            work/
+            <span className="text-ink-muted">{path}</span>
+          </span>
+          <span className="bg-bg-inset text-ink-muted rounded-full px-2 py-0.5 font-mono text-xs tabular-nums">
+            {count}
+          </span>
+        </div>
 
-          {/* The stack */}
-          <div className="relative h-[17.5rem] px-5">
-            {layers.map((layer, index) => (
-              <Layer
-                key={index}
-                index={index}
-                active={active}
-                reduced={reduced}
-                sx={sx}
-                sy={sy}
-              >
-                {layer}
-              </Layer>
-            ))}
+        {/* The deck, sitting open on the page — no frame, nothing clipping
+            the fanned backs. */}
+        <div className="relative h-[13.5rem]">
+          {layers.map((layer, index) => (
+            <Layer
+              key={index}
+              index={index}
+              active={active}
+              reduced={reduced}
+              sx={sx}
+              sy={sy}
+            >
+              {layer}
+            </Layer>
+          ))}
+        </div>
 
-            {/* View pill — above the deck, which now overlaps this corner */}
-            <div className="absolute bottom-5 left-5 z-10">
-              <span className="bg-ink text-bg inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium">
-                View
-                <span
-                  aria-hidden="true"
-                  className="transition-transform duration-300 ease-(--ease-out-expo) group-hover:translate-x-1"
-                >
-                  →
-                </span>
-              </span>
-            </div>
-          </div>
+        {/* Ghost CTA. Fills on hover, and the arrow slides — the same move
+            as the header CTA, so both buttons on the page behave alike. */}
+        <div className="mt-6">
+          <span className="border-line text-ink group-hover:bg-ink group-hover:text-bg group-hover:border-ink inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-colors duration-300">
+            View
+            <span
+              aria-hidden="true"
+              className="inline-block transition-transform duration-300 ease-(--ease-out-expo) group-hover:translate-x-1"
+            >
+              →
+            </span>
+          </span>
         </div>
       </Link>
 
-      <div className="mt-4 px-1">
+      <div className="mt-6">
         <h3 className="text-ink font-medium">{title}</h3>
         {description ? (
           <p className="text-ink-muted mt-1 text-sm leading-relaxed">
@@ -185,12 +185,12 @@ function Layer({
   const pointerY = useTransform(sy, [-0.5, 0.5], [-travel * 0.6, travel * 0.6]);
 
   // Rest: an obvious deck, backs peeking up and left.
-  const restX = [-30, -15, 0][index];
+  const restX = [-12, 3, 18][index];
   const restY = [-18, -9, 0][index];
   const restRotate = [-4.5, -2.2, 0][index];
 
   // Hover: the same arrangement, opened further.
-  const openX = [-42, -21, 3][index];
+  const openX = [-24, -3, 21][index];
   const openY = [-27, -13, 2][index];
   const openRotate = [-7, -3.4, 0.8][index];
 

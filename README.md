@@ -29,7 +29,25 @@ content existing.
 | `npm run dev` | Dev server |
 | `npm run build` | Production build |
 | `npm run check` | Typecheck + lint + format check (run before pushing) |
+| `npm run check:ui` | Browser checks — needs a running server (see below) |
 | `npm run typegen` | Regenerate TS types from the Sanity schema |
+
+### Browser checks
+
+`npm run check` cannot see layout or motion. `npm run check:ui` drives a real
+Chromium over the site and asserts the things that only appear when it renders:
+the card deck stays inside its column, the ghost CTA is reachable, no content is
+stranded invisible under reduced motion, and no route overflows at phone width.
+
+```bash
+npm run build && npm start        # in one terminal
+npm run check:ui                  # in another
+BASE_URL=http://localhost:3200 npm run check:ui   # if using another port
+```
+
+These caught three bugs typecheck and lint could not: a reduced-motion branch
+that stranded the hero at opacity 0, fanned cards clipping against their frame,
+and a View button buried under the deck.
 
 **Run `npm run typegen` after any schema change** — the generated types are what
 keep queries honest against the content model.
