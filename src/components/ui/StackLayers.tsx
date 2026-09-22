@@ -24,7 +24,7 @@ function Chrome({ label }: { label: string }) {
 
 /** Case studies — product UI fragments. */
 export const caseStudyLayers = [
-  <div key="c0" className="h-40">
+  <div key="c0" className="h-full">
     <Chrome label="overview" />
     <div className="space-y-2.5 p-3.5">
       <div className={`${bar} h-2 w-2/5`} />
@@ -34,7 +34,7 @@ export const caseStudyLayers = [
       </div>
     </div>
   </div>,
-  <div key="c1" className="h-40">
+  <div key="c1" className="h-full">
     <Chrome label="engagement" />
     <div className="flex h-[7.5rem] items-end gap-1 p-3">
       {[40, 65, 30, 80, 55, 95, 45, 70, 35, 60].map((h, i) => (
@@ -46,7 +46,7 @@ export const caseStudyLayers = [
       ))}
     </div>
   </div>,
-  <div key="c2" className="h-40">
+  <div key="c2" className="h-full">
     <Chrome label="activity" />
     <div className="space-y-3 p-3.5">
       {[0, 1, 2, 3].map((i) => (
@@ -62,7 +62,7 @@ export const caseStudyLayers = [
 
 /** Micro interactions — controls caught mid-transition. */
 export const microInteractionLayers = [
-  <div key="m0" className="flex h-40 items-center justify-center gap-3">
+  <div key="m0" className="flex h-full items-center justify-center gap-3">
     <span className="bg-ink/10 relative h-7 w-12 rounded-full">
       <span className="bg-ink/40 absolute top-1 left-1 size-5 rounded-full" />
     </span>
@@ -70,7 +70,7 @@ export const microInteractionLayers = [
       <span className="bg-ink absolute top-1 right-1 size-5 rounded-full" />
     </span>
   </div>,
-  <div key="m1" className="flex h-40 flex-col justify-center gap-2 px-4">
+  <div key="m1" className="flex h-full flex-col justify-center gap-2 px-4">
     <div className={`${bar} h-1.5 w-full`} />
     <div className="bg-ink/10 h-1.5 w-full overflow-hidden rounded-full">
       <div className="bg-ink h-full w-2/3 rounded-full" />
@@ -85,7 +85,7 @@ export const microInteractionLayers = [
       ))}
     </div>
   </div>,
-  <div key="m2" className="flex h-40 items-center justify-center">
+  <div key="m2" className="flex h-full items-center justify-center">
     <span className="bg-ink text-bg inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium">
       Drag
       <span className="bg-bg/30 h-3 w-px" />
@@ -96,7 +96,7 @@ export const microInteractionLayers = [
 
 /** Visual & brand — type and colour specimens. */
 export const brandLayers = [
-  <div key="b0" className="flex h-40 items-center justify-center gap-2 px-4">
+  <div key="b0" className="flex h-full items-center justify-center gap-2 px-4">
     {["#16150f", "#12b33f", "#e6e6e2", "#9a9a92"].map((c) => (
       <span
         key={c}
@@ -105,7 +105,7 @@ export const brandLayers = [
       />
     ))}
   </div>,
-  <div key="b1" className="flex h-40 flex-col justify-center px-4">
+  <div key="b1" className="flex h-full flex-col justify-center px-4">
     <span className="text-ink text-3xl leading-none font-medium tracking-tight">
       Aa
     </span>
@@ -113,7 +113,7 @@ export const brandLayers = [
       Geist · 400 500 600
     </span>
   </div>,
-  <div key="b2" className="flex h-40 items-center gap-3 px-4">
+  <div key="b2" className="flex h-full items-center gap-3 px-4">
     <span className="bg-ink text-bg grid size-10 shrink-0 place-items-center rounded-lg text-sm font-semibold">
       A
     </span>

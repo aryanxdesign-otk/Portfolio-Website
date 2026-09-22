@@ -121,11 +121,8 @@ export function StackCard({
               </Layer>
             ))}
 
-            {/* Fades the stack into the card so layers do not end abruptly */}
-            <div className="from-bg-subtle pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t to-transparent" />
-
-            {/* View pill */}
-            <div className="absolute bottom-5 left-5">
+            {/* View pill — above the deck, which now overlaps this corner */}
+            <div className="absolute bottom-5 left-5 z-10">
               <span className="bg-ink text-bg inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium">
                 View
                 <span
@@ -153,13 +150,17 @@ export function StackCard({
 }
 
 /**
- * One layer of the stack.
+ * One layer of the deck.
  *
- * `index` 0 is the backmost. Depth drives everything: at rest the layers sit
- * tucked almost on top of one another, and on hover they fan sideways like a
- * dealt hand so all three are readable at once. Front layers travel furthest
- * with the pointer, which is the cue that makes the stack read as having
- * depth rather than as three flat rectangles sliding together.
+ * `index` 0 is the backmost. The deck is visibly a deck at rest: each layer
+ * behind the front one sits up and to the left with a little more rotation,
+ * so all three edges read without any interaction. Hover only deepens what
+ * is already there — the cards spread further apart and lean toward the
+ * pointer, front layers travelling furthest, which is the cue that sells
+ * depth rather than three rectangles sliding as one slab.
+ *
+ * Every layer keeps its own border and shadow. A shared shadow on the group
+ * would flatten the deck back into a single silhouette.
  */
 function Layer({
   children,
@@ -176,42 +177,43 @@ function Layer({
   sx: MotionValue<number>;
   sy: MotionValue<number>;
 }) {
-  // Back layers move least, so the stack shears instead of sliding as a slab.
-  const depth = 3 - index;
-  const travel = 6 * depth;
+  // Front layers react most, so the deck shears instead of sliding as a slab.
+  const depth = index + 1;
+  const travel = 5 * depth;
 
   const pointerX = useTransform(sx, [-0.5, 0.5], [-travel, travel]);
   const pointerY = useTransform(sy, [-0.5, 0.5], [-travel * 0.6, travel * 0.6]);
 
-  // Resting: tucked. Hovered: fanned out and squared up.
-  const restY = [18, 9, 0][index];
-  const restScale = [0.92, 0.96, 1][index];
-  const restRotate = [0, 0, 0][index];
+  // Rest: an obvious deck, backs peeking up and left.
+  const restX = [-30, -15, 0][index];
+  const restY = [-18, -9, 0][index];
+  const restRotate = [-4.5, -2.2, 0][index];
 
-  const openX = [-26, -12, 0][index];
-  const openY = [10, 5, 0][index];
-  const openRotate = [-5, -2.2, 0][index];
+  // Hover: the same arrangement, opened further.
+  const openX = [-42, -21, 3][index];
+  const openY = [-27, -13, 2][index];
+  const openRotate = [-7, -3.4, 0.8][index];
 
   const settled = reduced || active;
 
   return (
     <motion.div
-      className="absolute inset-x-5 top-0 origin-bottom"
+      className="absolute top-[44%] left-1/2 aspect-[5/4] w-[68%] origin-center"
       style={{
         zIndex: index,
+        // Centre the layer on the container before any offset is applied.
+        marginLeft: "-34%",
         x: reduced ? 0 : pointerX,
         y: reduced ? 0 : pointerY,
       }}
       animate={{
-        translateX: settled ? openX : 0,
+        translateX: settled ? openX : restX,
         translateY: settled ? openY : restY,
         rotate: settled ? openRotate : restRotate,
-        scale: settled ? 1 : restScale,
-        opacity: settled ? 1 : [0.55, 0.8, 1][index],
       }}
       transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
     >
-      <div className="border-line bg-bg overflow-hidden rounded-(--radius) border shadow-[0_1px_2px_rgba(0,0,0,0.04),0_10px_30px_-14px_rgba(0,0,0,0.16)]">
+      <div className="border-line bg-bg h-full -translate-y-1/2 overflow-hidden rounded-[0.875rem] border shadow-[0_1px_2px_rgba(0,0,0,0.05),0_12px_28px_-16px_rgba(0,0,0,0.22)]">
         {children}
       </div>
     </motion.div>
