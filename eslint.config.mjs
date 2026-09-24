@@ -17,6 +17,13 @@ const eslintConfig = defineConfig([
     "src/sanity/types.generated.ts",
     "sanity/extract.json",
   ]),
+  {
+    // The verification scripts assert with `condition ? ok(…) : bad(…)`, which
+    // is expression-as-statement by design — it keeps each assertion to one
+    // readable line. Idiomatic in test code, so the rule is off here only.
+    files: ["scripts/**/*.mjs"],
+    rules: { "@typescript-eslint/no-unused-expressions": "off" },
+  },
 ]);
 
 export default eslintConfig;

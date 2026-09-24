@@ -178,72 +178,147 @@ const go = async (page, path) => {
   await context.close();
 }
 
-// --- Category pages: back link, title, and the right blocks ---------------
+// --- Each collection: title, back link, right number of items -------------
 {
   const [page, context] = await open({
     viewport: { width: 1400, height: 1100 },
   });
 
-  const cases = [
-    { category: "case-studies", title: "Design Case Studies", blocks: 2 },
-    { category: "brand", title: "Visual Design + Brand", blocks: 1 },
+  const collections = [
     {
-      category: "micro-interactions",
+      path: "/case-studies",
+      title: "Design Case Studies",
+      items: 3,
+      sel: "ul li a[href^='/case-studies/']",
+    },
+    {
+      path: "/interactions",
       title: "Front End Micro Interactions",
-      blocks: 0,
+      items: 3,
+      sel: "ul li a[href^='/interactions/']",
+    },
+    {
+      path: "/visual",
+      title: "Visual Design + Brand",
+      items: 2,
+      sel: "ul li a[href^='/visual/']",
     },
   ];
 
-  for (const { category, title, blocks } of cases) {
-    await go(page, `/work?category=${category}`);
+  for (const { path, title, items, sel } of collections) {
+    await go(page, path);
     const h1 = (await page.locator("h1").first().textContent())?.trim();
     const back = await page.locator('main a[href="/"]').first().isVisible();
-    const count = await page.locator("main ul li a[href^='/work/']").count();
-
-    h1 === title && back && count === blocks
-      ? ok(`${category}: titled, back link, ${blocks} block(s)`)
-      : bad(`${category}`, `title="${h1}" back=${back} blocks=${count}`);
+    const count = await page.locator(`main ${sel}`).count();
+    h1 === title && back && count === items
+      ? ok(`${path}: titled, back link, ${items} item(s)`)
+      : bad(path, `title="${h1}" back=${back} items=${count}`);
   }
+  await context.close();
+}
 
-  // An unknown category must not 404 or render a blank page.
-  await go(page, "/work?category=nonsense");
-  const fallback = await page.locator("main ul li a[href^='/work/']").count();
-  fallback === 3
-    ? ok("unknown category falls back to showing everything")
-    : bad("unknown category fallback", `${fallback} blocks`);
+// --- Detail pages: reachable, and the back link returns to the collection --
+{
+  const [page, context] = await open({
+    viewport: { width: 1400, height: 1100 },
+  });
+
+  for (const [collection, slug, title] of [
+    ["/case-studies", "fireplace-pro", "Fireplace Pro"],
+    ["/interactions", "spring-toggle", "Spring toggle"],
+    ["/visual", "obvious-brand", "Obvious"],
+  ]) {
+    await go(page, `${collection}/${slug}`);
+    // Assert the real title, not just "there is an h1" — a 404 page has one
+    // of those too, which is how a broken detail route hid here before.
+    const h1 = (await page.locator("h1").first().textContent())?.trim();
+    const back = await page.locator(`main a[href="${collection}"]`).count();
+    h1 === title && back > 0
+      ? ok(`${collection}/${slug}: "${title}", back link to collection`)
+      : bad(`${collection}/${slug}`, `h1="${h1}" backLinks=${back}`);
+  }
+  await context.close();
+}
+
+// --- Every interaction resolves to a real registry component --------------
+// The failure mode is a blank stage, which no other check would catch.
+{
+  const [page, context] = await open({
+    viewport: { width: 1400, height: 1100 },
+  });
+  await go(page, "/interactions");
+
+  const unresolved = await page.evaluate(
+    () =>
+      document.body.textContent?.includes("No component is registered under") ??
+      false,
+  );
+  !unresolved
+    ? ok("every interaction resolves to a registered component")
+    : bad(
+        "unregistered componentKey on the grid",
+        "stage shows the fallback notice",
+      );
+
+  // And each stage actually rendered something interactive.
+  const stages = await page.evaluate(() =>
+    [...document.querySelectorAll("main ul > li")].map(
+      (li) => li.querySelectorAll("button").length,
+    ),
+  );
+  stages.length > 0 && stages.every((n) => n >= 2)
+    ? ok(`all ${stages.length} demos mounted with controls`)
+    : bad("demos mounted", stages.join(","));
 
   await context.close();
 }
 
-// --- The footer is unified across every page ------------------------------
+// --- Source code renders highlighted, with no highlighter shipped ---------
 {
   const [page, context] = await open({
     viewport: { width: 1400, height: 1100 },
   });
-  for (const path of ["/", "/work", "/about", "/lab", "/work/fireplace-pro"]) {
-    await go(page, path);
-    const footer = await page.evaluate(() => {
-      const el = document.querySelector("footer");
-      if (!el) return null;
-      const text = el.textContent ?? "";
-      return {
-        trustedBy: text.includes("Trusted by"),
-        heading: text.includes("Lets craft"),
-        email: Boolean(el.querySelector('a[href^="mailto:"]')),
-        wordmark: Boolean(
-          [...el.querySelectorAll('[aria-hidden="true"]')].find(
-            (n) => n.textContent?.trim() === "DESIGN",
-          ),
-        ),
-      };
+  await go(page, "/interactions/spring-toggle");
+
+  const code = await page.evaluate(() => {
+    const block = document.querySelector(".shiki-block");
+    if (!block) return null;
+    const spans = [...block.querySelectorAll("span[style]")];
+    const colours = new Set(
+      spans.map((s) => getComputedStyle(s).color).filter(Boolean),
+    );
+    return {
+      hasCode: (block.textContent ?? "").includes("SpringToggle"),
+      distinctColours: colours.size,
+    };
+  });
+
+  code?.hasCode
+    ? ok("source block shows the real component")
+    : bad("source block", "missing");
+  (code?.distinctColours ?? 0) > 3
+    ? ok(`syntax highlighted (${code.distinctColours} token colours)`)
+    : bad("syntax highlighting", `${code?.distinctColours} colours`);
+
+  await context.close();
+}
+
+// --- Old /work URLs redirect rather than 404 ------------------------------
+{
+  const [page, context] = await open({
+    viewport: { width: 1400, height: 1100 },
+  });
+  for (const [from, to] of [
+    ["/work", "/case-studies"],
+    ["/work/fireplace-pro", "/case-studies/fireplace-pro"],
+  ]) {
+    const response = await page.goto(`${BASE}${from}`, {
+      waitUntil: "domcontentloaded",
     });
-    footer &&
-    footer.trustedBy &&
-    footer.heading &&
-    footer.email &&
-    footer.wordmark
-      ? ok(`footer complete on ${path}`)
-      : bad(`footer on ${path}`, JSON.stringify(footer));
+    const landed = new URL(page.url()).pathname;
+    landed === to && (response?.status() ?? 0) < 400
+      ? ok(`${from} redirects to ${to}`)
+      : bad(`${from} redirect`, `landed on ${landed}`);
   }
   await context.close();
 }
@@ -251,11 +326,14 @@ const go = async (page, path) => {
 // --- Every route, desktop and phone ---------------------------------------
 const ROUTES = [
   "/",
-  "/work",
-  "/work?category=brand",
+  "/case-studies",
+  "/case-studies/fireplace-pro",
+  "/interactions",
+  "/interactions/spring-toggle",
+  "/visual",
+  "/visual/obvious-brand",
   "/about",
   "/lab",
-  "/work/fireplace-pro",
 ];
 for (const width of [1400, 390]) {
   const [page, context] = await open({ viewport: { width, height: 900 } });

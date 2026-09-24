@@ -41,7 +41,7 @@ export const seedSiteSettings = {
   footerHeadingLead: "Lets craft",
   footerHeadingRest: "incredible work together.",
   navLinks: [
-    { label: "Work", href: "/work" },
+    { label: "Work", href: "/case-studies" },
     { label: "About", href: "/about" },
     { label: "Lab", href: "/lab" },
   ],
@@ -71,7 +71,9 @@ export const seedCaseStudies = [
     title: "Fireplace Pro",
     slug: "fireplace-pro",
     summary: "Pro trading terminal for active traders.",
-    category: "case-studies",
+    date: "2026-02-01",
+    projectType: "Trading terminal",
+    tags: ["Product design", "Design systems"],
     client: "Fireplace",
     roles: ["Product design"],
     year: 2026,
@@ -86,7 +88,9 @@ export const seedCaseStudies = [
     title: "Brahma.Fi",
     slug: "brahma-fi",
     summary: "Prediction markets. Acquired by Polymarket.",
-    category: "case-studies",
+    date: "2025-06-01",
+    projectType: "Prediction markets",
+    tags: ["Product design", "0 to 1"],
     client: "Brahma.Fi",
     roles: ["Product design"],
     year: 2025,
@@ -101,7 +105,9 @@ export const seedCaseStudies = [
     title: "Obvious",
     slug: "obvious",
     summary: "Security first by design.",
-    category: "brand",
+    date: "2025-01-01",
+    projectType: "Security",
+    tags: ["Product design"],
     client: "Obvious",
     roles: ["Product design"],
     year: 2025,
@@ -114,10 +120,66 @@ export const seedCaseStudies = [
 ];
 
 /** Counts for the home page card badges while running on seed content. */
+export const seedInteractions = [
+  {
+    _id: "seed-magnetic-button",
+    title: "Magnetic button",
+    slug: "magnetic-button",
+    summary: "A button that leans toward the cursor and settles.",
+    date: "2026-03-01",
+    tags: ["spring", "pointer"],
+    componentKey: "magnetic-button",
+  },
+  {
+    _id: "seed-spring-toggle",
+    title: "Spring toggle",
+    slug: "spring-toggle",
+    summary: "A toggle whose knob overshoots slightly before settling.",
+    date: "2026-02-10",
+    tags: ["spring", "layout"],
+    componentKey: "spring-toggle",
+  },
+  {
+    _id: "seed-elastic-tabs",
+    title: "Elastic tabs",
+    slug: "elastic-tabs",
+    summary: "An indicator that travels between tabs instead of cutting.",
+    date: "2026-01-20",
+    tags: ["layoutId", "spring"],
+    componentKey: "elastic-tabs",
+  },
+];
+
+export const seedVisualProjects = [
+  {
+    _id: "seed-fireplace-identity",
+    title: "Fireplace identity",
+    slug: "fireplace-identity",
+    summary:
+      "Wordmark, type system and product surface for a trading terminal.",
+    client: "Fireplace",
+    date: "2026-02-01",
+    projectType: "Identity",
+    tags: ["Brand", "Type"],
+    coverImage: null,
+  },
+  {
+    _id: "seed-obvious-brand",
+    title: "Obvious",
+    slug: "obvious-brand",
+    summary: "Security-first visual language for a self-custody wallet.",
+    client: "Obvious",
+    date: "2025-01-01",
+    projectType: "Visual system",
+    tags: ["Brand"],
+    coverImage: null,
+  },
+];
+
 export const seedCategoryCounts = {
-  caseStudies: 2,
-  microInteractions: 0,
-  brand: 1,
+  caseStudies: 3,
+  interactions: 3,
+  visual: 2,
 };
 
 export const seedExperiences = [

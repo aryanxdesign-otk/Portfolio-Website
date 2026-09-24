@@ -2,6 +2,12 @@ import "server-only";
 
 import type {
   AboutQueryResult,
+  InteractionBySlugQueryResult,
+  InteractionSlugsQueryResult,
+  InteractionsQueryResult,
+  VisualProjectBySlugQueryResult,
+  VisualProjectSlugsQueryResult,
+  VisualProjectsQueryResult,
   CategoryCountsQueryResult,
   CaseStudiesQueryResult,
   CaseStudyBySlugQueryResult,
@@ -23,6 +29,8 @@ import {
   seedAbout,
   seedCaseStudies,
   seedCategoryCounts,
+  seedInteractions,
+  seedVisualProjects,
   seedExperiences,
   seedHomePage,
   seedSiteSettings,
@@ -82,7 +90,8 @@ export function getCaseStudy(
     params: { slug },
     // Pulls in related testimonials, so both types invalidate it.
     tags: ["caseStudy", "testimonial"],
-    fallback: null,
+    fallback: (seedCaseStudies.find((project) => project.slug === slug) ??
+      null) as CaseStudyBySlugQueryResult,
   });
 }
 
@@ -143,6 +152,62 @@ export function getPost(slug: string): Promise<PostBySlugQueryResult> {
   });
 }
 
+export function getInteractions(): Promise<InteractionsQueryResult> {
+  return sanityFetch({
+    query: q.interactionsQuery,
+    tags: ["interaction"],
+    fallback: seedInteractions as InteractionsQueryResult,
+  });
+}
+
+export function getInteractionSlugs(): Promise<InteractionSlugsQueryResult> {
+  return sanityFetch({
+    query: q.interactionSlugsQuery,
+    tags: ["interaction"],
+    fallback: seedInteractions.map((item) => item.slug),
+  });
+}
+
+export function getInteraction(
+  slug: string,
+): Promise<InteractionBySlugQueryResult> {
+  return sanityFetch({
+    query: q.interactionBySlugQuery,
+    params: { slug },
+    tags: ["interaction"],
+    fallback: (seedInteractions.find((item) => item.slug === slug) ??
+      null) as InteractionBySlugQueryResult,
+  });
+}
+
+export function getVisualProjects(): Promise<VisualProjectsQueryResult> {
+  return sanityFetch({
+    query: q.visualProjectsQuery,
+    tags: ["visualProject"],
+    fallback: seedVisualProjects as VisualProjectsQueryResult,
+  });
+}
+
+export function getVisualProjectSlugs(): Promise<VisualProjectSlugsQueryResult> {
+  return sanityFetch({
+    query: q.visualProjectSlugsQuery,
+    tags: ["visualProject"],
+    fallback: seedVisualProjects.map((item) => item.slug),
+  });
+}
+
+export function getVisualProject(
+  slug: string,
+): Promise<VisualProjectBySlugQueryResult> {
+  return sanityFetch({
+    query: q.visualProjectBySlugQuery,
+    params: { slug },
+    tags: ["visualProject"],
+    fallback: (seedVisualProjects.find((item) => item.slug === slug) ??
+      null) as VisualProjectBySlugQueryResult,
+  });
+}
+
 export function getCategoryCounts(): Promise<CategoryCountsQueryResult> {
   return sanityFetch({
     query: q.categoryCountsQuery,
@@ -155,6 +220,11 @@ export function getSitemapEntries(): Promise<SitemapQueryResult> {
   return sanityFetch({
     query: q.sitemapQuery,
     tags: ["caseStudy", "post"],
-    fallback: { caseStudies: [], posts: [] },
+    fallback: {
+      caseStudies: [],
+      posts: [],
+      interactions: [],
+      visualProjects: [],
+    },
   });
 }

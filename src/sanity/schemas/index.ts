@@ -18,10 +18,12 @@ import { about } from "./documents/about";
 import { caseStudy } from "./documents/caseStudy";
 import { experience } from "./documents/experience";
 import { homePage } from "./documents/homePage";
+import { interaction } from "./documents/interaction";
 import { post } from "./documents/post";
 import { shot } from "./documents/shot";
 import { siteSettings } from "./documents/siteSettings";
 import { testimonial } from "./documents/testimonial";
+import { visualProject } from "./documents/visualProject";
 
 // Re-exported so Studio-side code has one obvious import, while server code
 // can import from "@/sanity/documentTypes" without pulling in the schemas.
@@ -35,6 +37,8 @@ export {
 export const schemaTypes: SchemaTypeDefinition[] = [
   // Documents
   caseStudy,
+  interaction,
+  visualProject,
   post,
   shot,
   testimonial,

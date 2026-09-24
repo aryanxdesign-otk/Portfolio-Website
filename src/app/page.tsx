@@ -6,7 +6,7 @@ import {
   caseStudyLayers,
   microInteractionLayers,
 } from "@/components/ui/StackLayers";
-import { CATEGORIES } from "@/sanity/categories";
+import { COLLECTIONS } from "@/sanity/categories";
 import {
   getCategoryCounts,
   getHomePage,
@@ -15,8 +15,8 @@ import {
 
 const LAYERS = {
   "case-studies": caseStudyLayers,
-  "micro-interactions": microInteractionLayers,
-  brand: brandLayers,
+  interactions: microInteractionLayers,
+  visual: brandLayers,
 } as const;
 
 export default async function Home() {
@@ -28,8 +28,8 @@ export default async function Home() {
 
   const countFor = {
     "case-studies": counts?.caseStudies ?? 0,
-    "micro-interactions": counts?.microInteractions ?? 0,
-    brand: counts?.brand ?? 0,
+    interactions: counts?.interactions ?? 0,
+    visual: counts?.visual ?? 0,
   };
 
   const showStatus =
@@ -66,16 +66,16 @@ export default async function Home() {
         </h2>
 
         <div className="grid gap-14 md:grid-cols-3 md:gap-8">
-          {CATEGORIES.map((category, index) => (
-            <FadeIn key={category.value} y={20} delay={index * 0.08}>
+          {COLLECTIONS.map((collection, index) => (
+            <FadeIn key={collection.key} y={20} delay={index * 0.08}>
               <StackCard
-                title={category.title}
-                description={category.description}
-                path={category.value}
-                count={countFor[category.value]}
-                href={`/work?category=${category.value}`}
+                title={collection.title}
+                description={collection.description}
+                path={collection.key}
+                count={countFor[collection.key]}
+                href={collection.href}
                 layers={
-                  LAYERS[category.value] as unknown as [
+                  LAYERS[collection.key] as unknown as [
                     React.ReactNode,
                     React.ReactNode,
                     React.ReactNode,

@@ -1,7 +1,5 @@
 import { defineField, defineType } from "sanity";
 
-import { CATEGORIES } from "@/sanity/categories";
-
 /**
  * The centerpiece document. Everything else on the site orbits this.
  *
@@ -33,21 +31,6 @@ export const caseStudy = defineType({
       group: "content",
       description: "The URL for this case study: /work/your-slug",
       options: { source: "title", maxLength: 96 },
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "category",
-      title: "Category",
-      type: "string",
-      group: "content",
-      description:
-        "Which of the three home page cards this belongs under. Also drives " +
-        "the filter on the work page.",
-      options: {
-        list: CATEGORIES.map((c) => ({ title: c.title, value: c.value })),
-        layout: "radio",
-      },
-      initialValue: "case-studies",
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -86,11 +69,36 @@ export const caseStudy = defineType({
       description: "e.g. Product design, Design systems, Prototyping",
     }),
     defineField({
+      name: "date",
+      title: "Date",
+      type: "date",
+      group: "meta",
+      description: "Shown in the meta row on the case study page.",
+      options: { dateFormat: "MMMM YYYY" },
+    }),
+    defineField({
       name: "year",
       title: "Year",
       type: "number",
       group: "meta",
+      description: "Shown as a tag on the grid. Defaults to the date's year.",
       validation: (rule) => rule.min(2000).max(2100).integer(),
+    }),
+    defineField({
+      name: "projectType",
+      title: "Type of project",
+      type: "string",
+      group: "meta",
+      description:
+        "One short label for the grid, e.g. \u201cTrading terminal\u201d.",
+    }),
+    defineField({
+      name: "tags",
+      title: "Tags",
+      type: "array",
+      group: "meta",
+      of: [{ type: "string" }],
+      options: { layout: "tags" },
     }),
     defineField({
       name: "timeline",

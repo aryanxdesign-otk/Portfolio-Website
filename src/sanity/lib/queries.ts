@@ -33,10 +33,12 @@ const CASE_STUDY_CARD = /* groq */ `
   title,
   "slug": slug.current,
   summary,
-  category,
   client,
   roles,
+  date,
   year,
+  projectType,
+  tags,
   accentColor,
   featured,
   order,
@@ -229,11 +231,62 @@ export const postBySlugQuery = defineQuery(`
   }
 `);
 
+// Interactions ---------------------------------------------------------------
+
+export const interactionsQuery = defineQuery(`
+  *[_type == "interaction" && defined(slug.current)] | order(date desc) {
+    _id, title, "slug": slug.current, summary, date, tags, componentKey
+  }
+`);
+
+export const interactionSlugsQuery = defineQuery(`
+  *[_type == "interaction" && defined(slug.current)].slug.current
+`);
+
+export const interactionBySlugQuery = defineQuery(`
+  *[_type == "interaction" && slug.current == $slug][0] {
+    _id, title, "slug": slug.current, summary, date, tags,
+    componentKey, sourceLabel, notes,
+    seo { ${SEO_FIELDS} }
+  }
+`);
+
+// Visual & brand --------------------------------------------------------------
+
+export const visualProjectsQuery = defineQuery(`
+  *[_type == "visualProject" && defined(slug.current)] | order(date desc) {
+    _id, title, "slug": slug.current, summary, client, date, projectType, tags,
+    coverImage { ${IMAGE_FIELDS} }
+  }
+`);
+
+export const visualProjectSlugsQuery = defineQuery(`
+  *[_type == "visualProject" && defined(slug.current)].slug.current
+`);
+
+export const visualProjectBySlugQuery = defineQuery(`
+  *[_type == "visualProject" && slug.current == $slug][0] {
+    _id, title, "slug": slug.current, summary, client, date, projectType, tags,
+    writing,
+    coverImage { ${IMAGE_FIELDS} },
+    seo { ${SEO_FIELDS} },
+    gallery[] {
+      ...,
+      _type == "galleryImage" => { ..., image { ${IMAGE_FIELDS} } },
+      _type == "videoBlock" => {
+        ...,
+        "videoUrl": file.asset->url,
+        poster { ${IMAGE_FIELDS} }
+      }
+    }
+  }
+`);
+
 /** Item counts per category, for the badges on the home page cards. */
 export const categoryCountsQuery = defineQuery(`{
-  "caseStudies": count(*[_type == "caseStudy" && category == "case-studies"]),
-  "microInteractions": count(*[_type == "caseStudy" && category == "micro-interactions"]),
-  "brand": count(*[_type == "caseStudy" && category == "brand"])
+  "caseStudies": count(*[_type == "caseStudy" && defined(slug.current)]),
+  "interactions": count(*[_type == "interaction" && defined(slug.current)]),
+  "visual": count(*[_type == "visualProject" && defined(slug.current)])
 }`);
 
 /** Every URL the sitemap needs, in one round trip. */
@@ -242,6 +295,12 @@ export const sitemapQuery = defineQuery(`{
     "slug": slug.current, _updatedAt
   },
   "posts": *[_type == "post" && defined(slug.current)] {
+    "slug": slug.current, _updatedAt
+  },
+  "interactions": *[_type == "interaction" && defined(slug.current)] {
+    "slug": slug.current, _updatedAt
+  },
+  "visualProjects": *[_type == "visualProject" && defined(slug.current)] {
     "slug": slug.current, _updatedAt
   }
 }`);

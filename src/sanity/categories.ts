@@ -1,39 +1,38 @@
 /**
- * The three work categories the home page surfaces as cards.
+ * The three collections the home page surfaces as decks.
  *
- * Kept in a module with no imports so schemas, queries, pages and the URL
- * filter all read the same list — adding a fourth category means editing
- * exactly one array.
+ * Each is now its own Sanity type and its own route root, so this module
+ * carries presentation only — titles, descriptions and where each deck points.
  */
-export const CATEGORIES = [
+export const COLLECTIONS = [
   {
-    value: "case-studies",
+    key: "case-studies",
+    href: "/case-studies",
     title: "Design Case Studies",
-    short: "case studies",
+    singular: "case study",
+    plural: "case studies",
     description: "End-to-end product work, from problem to shipped.",
   },
   {
-    value: "micro-interactions",
+    key: "interactions",
+    href: "/interactions",
     title: "Front End Micro Interactions",
-    short: "micro interactions",
+    singular: "interaction",
+    plural: "interactions",
     description: "Small, precise pieces of interface motion, built in code.",
   },
   {
-    value: "brand",
+    key: "visual",
+    href: "/visual",
     title: "Visual Design + Brand",
-    short: "visual & brand",
+    singular: "visual project",
+    plural: "visual projects",
     description: "Identity, type and visual systems.",
   },
 ] as const;
 
-export type CategoryValue = (typeof CATEGORIES)[number]["value"];
+export type CollectionKey = (typeof COLLECTIONS)[number]["key"];
 
-export const CATEGORY_VALUES = CATEGORIES.map((c) => c.value);
-
-export function isCategory(value: string | undefined): value is CategoryValue {
-  return Boolean(value) && CATEGORY_VALUES.includes(value as CategoryValue);
-}
-
-export function getCategory(value: string | undefined) {
-  return CATEGORIES.find((c) => c.value === value);
+export function getCollection(key: CollectionKey) {
+  return COLLECTIONS.find((c) => c.key === key)!;
 }

@@ -200,6 +200,28 @@
   }
 }
 
+/* Shiki output. One build-time highlight pass emits variables for both
+   themes; these pick the right set so the block follows the site theme with
+   no re-highlighting and no highlighter shipped to the browser. */
+.shiki-block :is(pre, code) {
+  background: transparent !important;
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+
+.shiki-block span {
+  color: var(--shiki-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .shiki-block span {
+    color: var(--shiki-dark);
+  }
+}
+
+:root[data-theme="dark"] .shiki-block span {
+  color: var(--shiki-dark);
+}
+
 @utility container-page {
   width: 100%;
   max-width: var(--container-max);

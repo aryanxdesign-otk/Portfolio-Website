@@ -15,6 +15,8 @@ export type SingletonType = (typeof SINGLETON_TYPES)[number];
 /** Every document type. These double as the cache tags for revalidation. */
 export const DOCUMENT_TYPES = [
   "caseStudy",
+  "interaction",
+  "visualProject",
   "post",
   "shot",
   "testimonial",
