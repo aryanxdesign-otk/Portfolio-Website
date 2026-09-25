@@ -42,7 +42,7 @@ export function SiteHeader({
         </div>
       </div>
 
-      <div className="md:absolute md:left-1/2 md:-translate-x-1/2">
+      <div className="min-w-0 md:flex-1 md:px-6">
         <Suspense fallback={<NavPillsFallback links={navLinks} />}>
           <NavPills links={navLinks} />
         </Suspense>

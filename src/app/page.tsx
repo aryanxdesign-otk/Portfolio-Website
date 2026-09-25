@@ -1,6 +1,7 @@
 import { FadeIn } from "@/components/motion/FadeIn";
 import { AvailabilityPill } from "@/components/ui/AvailabilityPill";
 import { StackCard } from "@/components/ui/StackCard";
+import { Testimonials } from "@/components/ui/Testimonials";
 import {
   brandLayers,
   caseStudyLayers,
@@ -9,6 +10,7 @@ import {
 import { COLLECTIONS } from "@/sanity/categories";
 import {
   getCategoryCounts,
+  getFeaturedTestimonials,
   getHomePage,
   getSiteSettings,
 } from "@/sanity/lib/content";
@@ -20,10 +22,11 @@ const LAYERS = {
 } as const;
 
 export default async function Home() {
-  const [home, settings, counts] = await Promise.all([
+  const [home, settings, counts, testimonials] = await Promise.all([
     getHomePage(),
     getSiteSettings(),
     getCategoryCounts(),
+    getFeaturedTestimonials(),
   ]);
 
   const countFor = {
@@ -40,7 +43,7 @@ export default async function Home() {
       {/* Hero */}
       <section className="pt-14 pb-16 md:pt-24 md:pb-24">
         <FadeIn y={14}>
-          <h1 className="max-w-[24ch] text-2xl font-medium tracking-tight text-pretty md:max-w-[38ch]">
+          <h1 className="max-w-[24ch] text-2xl font-medium tracking-tight text-pretty md:max-w-[46ch]">
             {home?.heroSubline ?? home?.heroHeadline}
           </h1>
 
@@ -86,6 +89,11 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      <Testimonials
+        heading={home?.testimonialsSectionHeading}
+        items={testimonials}
+      />
     </main>
   );
 }

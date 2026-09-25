@@ -323,6 +323,106 @@ const go = async (page, path) => {
   await context.close();
 }
 
+// --- robots.txt must keep crawlers out of the CMS -------------------------
+{
+  const res = await fetch(`${BASE}/robots.txt`);
+  const text = await res.text();
+  /Disallow:\s*\/studio/.test(text)
+    ? ok("robots.txt disallows /studio")
+    : bad("robots.txt disallows /studio", text.slice(0, 120));
+  /Sitemap:/.test(text)
+    ? ok("robots.txt points at the sitemap")
+    : bad("robots.txt sitemap line", "missing");
+}
+
+// --- The sitemap must list detail pages, not just the static routes -------
+{
+  const res = await fetch(`${BASE}/sitemap.xml`);
+  const xml = await res.text();
+  const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+
+  const needed = [
+    "/case-studies/fireplace-pro",
+    "/interactions/spring-toggle",
+    "/visual/obvious-brand",
+    "/writing/zero-to-one",
+  ];
+  const missing = needed.filter((path) => !urls.some((u) => u.endsWith(path)));
+  missing.length === 0
+    ? ok(
+        `sitemap lists ${urls.length} URLs including every collection's details`,
+      )
+    : bad("sitemap detail URLs", `missing ${missing.join(", ")}`);
+
+  urls.some((u) => u.includes("/studio"))
+    ? bad("sitemap excludes /studio", "it is listed")
+    : ok("sitemap excludes /studio");
+}
+
+// --- OG images must render, not 404 ---------------------------------------
+{
+  for (const path of [
+    "/opengraph-image",
+    "/case-studies/fireplace-pro/opengraph-image",
+  ]) {
+    const res = await fetch(`${BASE}${path}`);
+    const type = res.headers.get("content-type") ?? "";
+    res.ok && type.startsWith("image/")
+      ? ok(`OG image renders: ${path}`)
+      : bad(`OG image ${path}`, `${res.status} ${type}`);
+  }
+}
+
+// --- Every nav item must resolve to a real route --------------------------
+{
+  const [page, context] = await open({
+    viewport: { width: 1400, height: 1100 },
+  });
+  await go(page, "/");
+  const hrefs = await page.evaluate(() =>
+    [...document.querySelectorAll("header nav a")].map((a) =>
+      a.getAttribute("href"),
+    ),
+  );
+  const dead = [];
+  for (const href of hrefs) {
+    if (!href || !href.startsWith("/")) continue;
+    const res = await fetch(`${BASE}${href}`);
+    if (!res.ok) dead.push(`${href} (${res.status})`);
+  }
+  dead.length === 0
+    ? ok(`all ${hrefs.length} nav links resolve`)
+    : bad("dead nav links", dead.join(", "));
+  await context.close();
+}
+
+// --- Writing and testimonials ---------------------------------------------
+{
+  const [page, context] = await open({
+    viewport: { width: 1400, height: 1100 },
+  });
+
+  await go(page, "/writing");
+  const posts = await page.locator("main a[href^='/writing/']").count();
+  posts >= 2
+    ? ok(`/writing lists ${posts} posts`)
+    : bad("/writing list", `${posts}`);
+
+  await go(page, "/writing/zero-to-one");
+  const title = (await page.locator("h1").first().textContent())?.trim();
+  title === "Designing 0 to 1, twelve times over"
+    ? ok("post detail shows its real title")
+    : bad("post detail", `h1="${title}"`);
+
+  await go(page, "/");
+  const quotes = await page.locator("main blockquote").count();
+  quotes >= 2
+    ? ok(`home page shows ${quotes} testimonials`)
+    : bad("home testimonials", `${quotes} quotes`);
+
+  await context.close();
+}
+
 // --- Every route, desktop and phone ---------------------------------------
 const ROUTES = [
   "/",
@@ -333,6 +433,8 @@ const ROUTES = [
   "/visual",
   "/visual/obvious-brand",
   "/about",
+  "/writing",
+  "/writing/zero-to-one",
   "/lab",
 ];
 for (const width of [1400, 390]) {

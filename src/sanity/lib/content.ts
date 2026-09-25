@@ -30,6 +30,8 @@ import {
   seedCaseStudies,
   seedCategoryCounts,
   seedInteractions,
+  seedPosts,
+  seedTestimonials,
   seedVisualProjects,
   seedExperiences,
   seedHomePage,
@@ -123,7 +125,7 @@ export function getFeaturedTestimonials(): Promise<FeaturedTestimonialsQueryResu
   return sanityFetch({
     query: q.featuredTestimonialsQuery,
     tags: ["testimonial"],
-    fallback: [],
+    fallback: seedTestimonials as FeaturedTestimonialsQueryResult,
   });
 }
 
@@ -131,7 +133,7 @@ export function getPosts(): Promise<PostsQueryResult> {
   return sanityFetch({
     query: q.postsQuery,
     tags: ["post"],
-    fallback: [],
+    fallback: seedPosts as PostsQueryResult,
   });
 }
 
@@ -139,7 +141,7 @@ export function getPostSlugs(): Promise<PostSlugsQueryResult> {
   return sanityFetch({
     query: q.postSlugsQuery,
     tags: ["post"],
-    fallback: [],
+    fallback: seedPosts.map((post) => post.slug),
   });
 }
 
@@ -148,7 +150,8 @@ export function getPost(slug: string): Promise<PostBySlugQueryResult> {
     query: q.postBySlugQuery,
     params: { slug },
     tags: ["post"],
-    fallback: null,
+    fallback: (seedPosts.find((post) => post.slug === slug) ??
+      null) as PostBySlugQueryResult,
   });
 }
 
@@ -219,12 +222,15 @@ export function getCategoryCounts(): Promise<CategoryCountsQueryResult> {
 export function getSitemapEntries(): Promise<SitemapQueryResult> {
   return sanityFetch({
     query: q.sitemapQuery,
-    tags: ["caseStudy", "post"],
+    tags: ["caseStudy", "post", "interaction", "visualProject"],
+    // Derived from seed rather than empty: an unconfigured project would
+    // otherwise publish a sitemap listing only the static routes, silently
+    // hiding every detail page from crawlers.
     fallback: {
-      caseStudies: [],
-      posts: [],
-      interactions: [],
-      visualProjects: [],
-    },
+      caseStudies: seedCaseStudies.map((item) => ({ slug: item.slug })),
+      posts: seedPosts.map((item) => ({ slug: item.slug })),
+      interactions: seedInteractions.map((item) => ({ slug: item.slug })),
+      visualProjects: seedVisualProjects.map((item) => ({ slug: item.slug })),
+    } as SitemapQueryResult,
   });
 }

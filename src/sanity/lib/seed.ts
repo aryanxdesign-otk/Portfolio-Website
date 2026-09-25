@@ -41,9 +41,11 @@ export const seedSiteSettings = {
   footerHeadingLead: "Lets craft",
   footerHeadingRest: "incredible work together.",
   navLinks: [
-    { label: "Work", href: "/case-studies" },
+    { label: "Case studies", href: "/case-studies" },
+    { label: "Interactions", href: "/interactions" },
+    { label: "Visual", href: "/visual" },
+    { label: "Writing", href: "/writing" },
     { label: "About", href: "/about" },
-    { label: "Lab", href: "/lab" },
   ],
   footerNote: null,
   defaultSeo: null,
@@ -58,7 +60,7 @@ export const seedHomePage = {
   marqueeWords: null,
   workSectionHeading: "Projects",
   playgroundSectionHeading: "Lab",
-  testimonialsSectionHeading: null,
+  testimonialsSectionHeading: "Kind words",
   ctaHeading: "Lets craft incredible work together.",
   ctaText: null,
   seo: null,
@@ -181,6 +183,50 @@ export const seedCategoryCounts = {
   interactions: 3,
   visual: 2,
 };
+
+export const seedPosts = [
+  {
+    _id: "seed-post-craft",
+    title: "Obsession is what makes good design great",
+    slug: "obsession-and-craft",
+    publishedAt: "2026-03-12",
+    excerpt:
+      "Attention to detail is not perfectionism. It is the thing that makes stakeholders trust you with the next decision.",
+    tags: ["Craft", "Process"],
+    coverImage: null,
+  },
+  {
+    _id: "seed-post-zero-to-one",
+    title: "Designing 0 to 1, twelve times over",
+    slug: "zero-to-one",
+    publishedAt: "2026-01-28",
+    excerpt:
+      "What actually transfers between early-stage products, and what has to be relearned every time.",
+    tags: ["Product", "Startups"],
+    coverImage: null,
+  },
+];
+
+export const seedTestimonials = [
+  {
+    _id: "seed-testimonial-1",
+    quote:
+      "Aryan shipped a trading terminal that our most demanding users adopted immediately. He asks the questions nobody else in the room is asking.",
+    authorName: "Founder",
+    role: "CEO",
+    company: "Fireplace",
+    avatar: null,
+  },
+  {
+    _id: "seed-testimonial-2",
+    quote:
+      "He took us from a rough idea to a product that got acquired. The craft is obvious, but it is the judgement that made the difference.",
+    authorName: "Co-founder",
+    role: "Product",
+    company: "Brahma.Fi",
+    avatar: null,
+  },
+];
 
 export const seedExperiences = [
   {

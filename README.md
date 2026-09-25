@@ -69,6 +69,30 @@ Net effect: edits go live in seconds, with no rebuild and no redeploy.
 5. **Projection:** `{_type, "slug": slug.current}`
 6. **Secret:** the same value as `SANITY_REVALIDATE_SECRET` in your env
 
+## Deploying to Vercel
+
+1. [vercel.com/new](https://vercel.com/new) → import this repository
+2. Set the production branch under **Settings → Git** if not using `main`
+3. **No environment variables are required** — the site builds and renders
+   fully on the seed content in `src/sanity/lib/seed.ts`
+4. Deploy
+
+Once a Sanity project exists, add the four variables below and the site
+switches from seed to live CMS content with no code change.
+
+**Set `NEXT_PUBLIC_SITE_URL` once the domain is known.** The sitemap, OG images
+and canonical URLs all derive from it; without it they fall back to the Vercel
+preview domain.
+
+### Known advisories
+
+`npm audit` reports three high-severity issues in `adm-zip`, `js-yaml` and
+`smol-toml`. All three are transitive dependencies of the **Sanity CLI** — they
+never reach the browser or the server runtime. npm's suggested fix is `sanity`
+5.14.1, which is a *downgrade* from the 6.16.0 this project uses (the current
+latest), so taking it would cost a major CMS version to silence DoS advisories
+in build tooling. Left as-is pending an upstream update.
+
 ## Environment variables
 
 See `.env.example` — every variable is documented there with where to get it.

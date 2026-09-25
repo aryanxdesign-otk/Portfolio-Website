@@ -19,7 +19,7 @@ export function NavPillsFallback({
   links: { label: string | null; href: string | null }[];
 }) {
   return (
-    <nav className="flex items-center gap-1">
+    <nav className="flex flex-wrap items-center justify-center gap-1">
       {links.map((link) =>
         link.href && link.label ? (
           <Link
@@ -56,7 +56,7 @@ export function NavPills({
   const reduced = useReducedMotion();
 
   return (
-    <nav className="flex items-center gap-1">
+    <nav className="flex flex-wrap items-center justify-center gap-1">
       {links.map((link) => {
         if (!link.href || !link.label) return null;
 
