@@ -33,12 +33,11 @@ const CASE_STUDY_CARD = /* groq */ `
   title,
   "slug": slug.current,
   summary,
+  project,
   client,
-  roles,
   date,
   year,
   projectType,
-  tags,
   accentColor,
   featured,
   order,
@@ -106,8 +105,9 @@ export const caseStudySlugsQuery = defineQuery(`
 export const caseStudyBySlugQuery = defineQuery(`
   *[_type == "caseStudy" && slug.current == $slug][0] {
     ${CASE_STUDY_CARD},
+    intro,
+    scopeOfWork,
     timeline,
-    tools,
     externalUrl,
     seo { ${SEO_FIELDS} },
     body[] {

@@ -224,7 +224,13 @@ const go = async (page, path) => {
   });
 
   for (const [collection, slug, title] of [
-    ["/case-studies", "fireplace-pro", "Fireplace Pro"],
+    // The case study title is now the long statement; the project name
+    // lives in the meta row and on the grid card.
+    [
+      "/case-studies",
+      "fireplace-pro",
+      "Solving critical UX for Pro-traders of Prediction Markets",
+    ],
     ["/interactions", "spring-toggle", "Spring toggle"],
     ["/visual", "obvious-brand", "Obvious"],
   ]) {
@@ -320,6 +326,104 @@ const go = async (page, path) => {
       ? ok(`${from} redirects to ${to}`)
       : bad(`${from} redirect`, `landed on ${landed}`);
   }
+  await context.close();
+}
+
+// --- Case study template ---------------------------------------------------
+// The two rules that define this layout and are invisible in code review:
+// prose sits in a narrower column than the imagery, and section headings sit
+// tight on the paragraph they introduce.
+{
+  const [page, context] = await open({
+    viewport: { width: 1400, height: 1100 },
+  });
+  await go(page, "/case-studies/fireplace-pro");
+
+  const layout = await page.evaluate(() => {
+    const main = document.querySelector("main");
+    const paras = [...main.querySelectorAll("p")].filter(
+      (el) => (el.textContent ?? "").trim().length > 150,
+    );
+    const media = [
+      ...main.querySelectorAll(
+        "figure > div, main > div > div.overflow-hidden",
+      ),
+    ];
+    const bodyHeadings = [...main.querySelectorAll("h2")].filter(
+      (h) => !h.closest("section[aria-label]"),
+    );
+
+    return {
+      meta: [...main.querySelectorAll("dt")].map((dt, i) => ({
+        label: dt.textContent,
+        value: main.querySelectorAll("dd")[i]?.textContent,
+      })),
+      scope: [
+        ...main.querySelectorAll("section[aria-label='Scope of Work'] li"),
+      ].length,
+      prose: paras.length
+        ? Math.round(paras[0].getBoundingClientRect().width)
+        : 0,
+      media: media.length
+        ? Math.round(
+            Math.max(...media.map((m) => m.getBoundingClientRect().width)),
+          )
+        : 0,
+      headings: bodyHeadings.map((h) => {
+        const r = h.getBoundingClientRect();
+        const next = h.nextElementSibling?.getBoundingClientRect();
+        return {
+          alignedLeft: next ? Math.abs(r.left - next.left) <= 1 : false,
+          gap: next ? Math.round(next.top - r.bottom) : null,
+        };
+      }),
+    };
+  });
+
+  const project = layout.meta.find((m) => m.label === "Project");
+  const year = layout.meta.find((m) => m.label === "Year");
+  project?.value && year?.value
+    ? ok(`meta row reads Project ${project.value} · Year ${year.value}`)
+    : bad("meta row", JSON.stringify(layout.meta));
+
+  layout.scope === 4
+    ? ok(`Scope of Work shows ${layout.scope} pills`)
+    : bad("Scope of Work pills", `${layout.scope}`);
+
+  layout.prose > 0 && layout.media > layout.prose
+    ? ok(
+        `prose (${layout.prose}px) is narrower than imagery (${layout.media}px)`,
+      )
+    : bad(
+        "prose narrower than imagery",
+        `prose=${layout.prose} media=${layout.media}`,
+      );
+
+  layout.headings.length > 0 && layout.headings.every((h) => h.alignedLeft)
+    ? ok(`${layout.headings.length} body headings align with their paragraphs`)
+    : bad("heading alignment", JSON.stringify(layout.headings));
+
+  layout.headings.every((h) => h.gap !== null && h.gap <= 10)
+    ? ok(`headings sit tight on their paragraph (${layout.headings[0]?.gap}px)`)
+    : bad("heading gap", JSON.stringify(layout.headings.map((h) => h.gap)));
+
+  await context.close();
+}
+
+// --- Grid cards lead with the project name --------------------------------
+{
+  const [page, context] = await open({
+    viewport: { width: 1400, height: 1100 },
+  });
+  await go(page, "/case-studies");
+  const titles = await page.evaluate(() =>
+    [...document.querySelectorAll("main ul li h3")].map((h) =>
+      h.textContent?.trim(),
+    ),
+  );
+  titles.includes("Fireplace Pro")
+    ? ok("grid cards lead with the project name")
+    : bad("grid card titles", titles.join(" | "));
   await context.close();
 }
 

@@ -46,3 +46,6 @@ next-env.d.ts
 
 # Sanity typegen artifacts
 sanity/extract.json
+
+# Generated from the real interaction sources at build time
+src/interactions/sources.generated.ts

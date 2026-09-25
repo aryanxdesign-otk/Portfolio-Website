@@ -484,16 +484,16 @@ export type CaseStudy = {
   _rev: string;
   title?: string;
   slug?: Slug;
+  project?: string;
   summary?: string;
+  intro?: string;
+  scopeOfWork?: Array<string>;
   body?: CaseStudyBody;
   client?: string;
-  roles?: Array<string>;
   date?: string;
   year?: number;
   projectType?: string;
-  tags?: Array<string>;
   timeline?: string;
-  tools?: Array<string>;
   externalUrl?: string;
   coverImage?: CaptionedImage;
   thumbnailVideo?: {
@@ -726,7 +726,7 @@ export type SiteSettingsQueryResult = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: homePageQuery
-// Query: *[_type == "homePage"][0] {    heroHeadline,    heroSubline,    marqueeWords,    workSectionHeading,    playgroundSectionHeading,    testimonialsSectionHeading,    ctaHeading,    ctaText,    seo {   title,  description,  noIndex,  ogImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } },    // Explicit order if set, otherwise everything flagged as featured.    "featured": coalesce(      featuredCaseStudies[]-> {   _id,  title,  "slug": slug.current,  summary,  client,  roles,  date,  year,  projectType,  tags,  accentColor,  featured,  order,  coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } },  "thumbnailVideoUrl": thumbnailVideo.asset->url },      *[_type == "caseStudy" && featured == true]        | order(coalesce(order, 9999) asc, year desc) {   _id,  title,  "slug": slug.current,  summary,  client,  roles,  date,  year,  projectType,  tags,  accentColor,  featured,  order,  coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } },  "thumbnailVideoUrl": thumbnailVideo.asset->url }    )  }
+// Query: *[_type == "homePage"][0] {    heroHeadline,    heroSubline,    marqueeWords,    workSectionHeading,    playgroundSectionHeading,    testimonialsSectionHeading,    ctaHeading,    ctaText,    seo {   title,  description,  noIndex,  ogImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } },    // Explicit order if set, otherwise everything flagged as featured.    "featured": coalesce(      featuredCaseStudies[]-> {   _id,  title,  "slug": slug.current,  summary,  project,  client,  date,  year,  projectType,  accentColor,  featured,  order,  coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } },  "thumbnailVideoUrl": thumbnailVideo.asset->url },      *[_type == "caseStudy" && featured == true]        | order(coalesce(order, 9999) asc, year desc) {   _id,  title,  "slug": slug.current,  summary,  project,  client,  date,  year,  projectType,  accentColor,  featured,  order,  coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } },  "thumbnailVideoUrl": thumbnailVideo.asset->url }    )  }
 export type HomePageQueryResult = {
   heroHeadline: string | null;
   heroSubline: string | null;
@@ -765,12 +765,11 @@ export type HomePageQueryResult = {
         title: string | null;
         slug: string | null;
         summary: string | null;
+        project: string | null;
         client: string | null;
-        roles: Array<string> | null;
         date: string | null;
         year: number | null;
         projectType: string | null;
-        tags: Array<string> | null;
         accentColor: string | null;
         featured: true;
         order: number | null;
@@ -801,12 +800,11 @@ export type HomePageQueryResult = {
         title: string | null;
         slug: string | null;
         summary: string | null;
+        project: string | null;
         client: string | null;
-        roles: Array<string> | null;
         date: string | null;
         year: number | null;
         projectType: string | null;
-        tags: Array<string> | null;
         accentColor: string | null;
         featured: boolean | null;
         order: number | null;
@@ -836,18 +834,17 @@ export type HomePageQueryResult = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: caseStudiesQuery
-// Query: *[_type == "caseStudy" && defined(slug.current)]    | order(coalesce(order, 9999) asc, year desc) {      _id,  title,  "slug": slug.current,  summary,  client,  roles,  date,  year,  projectType,  tags,  accentColor,  featured,  order,  coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } },  "thumbnailVideoUrl": thumbnailVideo.asset->url  }
+// Query: *[_type == "caseStudy" && defined(slug.current)]    | order(coalesce(order, 9999) asc, year desc) {      _id,  title,  "slug": slug.current,  summary,  project,  client,  date,  year,  projectType,  accentColor,  featured,  order,  coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } },  "thumbnailVideoUrl": thumbnailVideo.asset->url  }
 export type CaseStudiesQueryResult = Array<{
   _id: string;
   title: string | null;
   slug: string | null;
   summary: string | null;
+  project: string | null;
   client: string | null;
-  roles: Array<string> | null;
   date: string | null;
   year: number | null;
   projectType: string | null;
-  tags: Array<string> | null;
   accentColor: string | null;
   featured: boolean | null;
   order: number | null;
@@ -881,18 +878,17 @@ export type CaseStudySlugsQueryResult = Array<string | null>;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: caseStudyBySlugQuery
-// Query: *[_type == "caseStudy" && slug.current == $slug][0] {      _id,  title,  "slug": slug.current,  summary,  client,  roles,  date,  year,  projectType,  tags,  accentColor,  featured,  order,  coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } },  "thumbnailVideoUrl": thumbnailVideo.asset->url,    timeline,    tools,    externalUrl,    seo {   title,  description,  noIndex,  ogImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } },    body[] {      ...,      _type == "imageBlock" => { ..., image {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } },      _type == "imageGrid" => { ..., images[] {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } },      _type == "videoBlock" => {        ...,        "videoUrl": file.asset->url,        poster {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } }      },      _type == "block" => {        ...,        markDefs[] { ... }      }    },    "testimonials": *[_type == "testimonial" && relatedCaseStudy._ref == ^._id]      | order(coalesce(order, 9999) asc) {      _id, quote, authorName, role, company,      avatar {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } }    },    // Neighbours for the "next project" link at the end of a case study.    "next": *[_type == "caseStudy" && defined(slug.current) && _id != ^._id]      | order(coalesce(order, 9999) asc, year desc)[0] {      title, "slug": slug.current, coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } }    }  }
+// Query: *[_type == "caseStudy" && slug.current == $slug][0] {      _id,  title,  "slug": slug.current,  summary,  project,  client,  date,  year,  projectType,  accentColor,  featured,  order,  coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } },  "thumbnailVideoUrl": thumbnailVideo.asset->url,    intro,    scopeOfWork,    timeline,    externalUrl,    seo {   title,  description,  noIndex,  ogImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } },    body[] {      ...,      _type == "imageBlock" => { ..., image {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } },      _type == "imageGrid" => { ..., images[] {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } } },      _type == "videoBlock" => {        ...,        "videoUrl": file.asset->url,        poster {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } }      },      _type == "block" => {        ...,        markDefs[] { ... }      }    },    "testimonials": *[_type == "testimonial" && relatedCaseStudy._ref == ^._id]      | order(coalesce(order, 9999) asc) {      _id, quote, authorName, role, company,      avatar {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } }    },    // Neighbours for the "next project" link at the end of a case study.    "next": *[_type == "caseStudy" && defined(slug.current) && _id != ^._id]      | order(coalesce(order, 9999) asc, year desc)[0] {      title, "slug": slug.current, coverImage {   ...,  asset->{    _id,    url,    metadata { lqip, dimensions { width, height, aspectRatio } }  } }    }  }
 export type CaseStudyBySlugQueryResult = {
   _id: string;
   title: string | null;
   slug: string | null;
   summary: string | null;
+  project: string | null;
   client: string | null;
-  roles: Array<string> | null;
   date: string | null;
   year: number | null;
   projectType: string | null;
-  tags: Array<string> | null;
   accentColor: string | null;
   featured: boolean | null;
   order: number | null;
@@ -917,8 +913,9 @@ export type CaseStudyBySlugQueryResult = {
     caption?: string;
   } | null;
   thumbnailVideoUrl: string | null;
+  intro: string | null;
+  scopeOfWork: Array<string> | null;
   timeline: string | null;
-  tools: Array<string> | null;
   externalUrl: string | null;
   seo: {
     title: string | null;
@@ -1718,10 +1715,10 @@ export type SitemapQueryResult = {
 declare global {
   interface SanityQueries {
     '\n  *[_type == "siteSettings"][0] {\n    name,\n    tagline,\n    availabilityStatus,\n    availabilityNote,\n    email,\n    socials[] { platform, label, url },\n    "cvUrl": cvFile.asset->url,\n    bookingUrl,\n    clients[] { name, url, logo { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n } },\n    footerWordmark,\n    footerHeadingLead,\n    footerHeadingRest,\n    navLinks[] { label, href },\n    footerNote,\n    defaultSeo { \n  title,\n  description,\n  noIndex,\n  ogImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n }\n  }\n': SiteSettingsQueryResult;
-    '\n  *[_type == "homePage"][0] {\n    heroHeadline,\n    heroSubline,\n    marqueeWords,\n    workSectionHeading,\n    playgroundSectionHeading,\n    testimonialsSectionHeading,\n    ctaHeading,\n    ctaText,\n    seo { \n  title,\n  description,\n  noIndex,\n  ogImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n },\n    // Explicit order if set, otherwise everything flagged as featured.\n    "featured": coalesce(\n      featuredCaseStudies[]-> { \n  _id,\n  title,\n  "slug": slug.current,\n  summary,\n  client,\n  roles,\n  date,\n  year,\n  projectType,\n  tags,\n  accentColor,\n  featured,\n  order,\n  coverImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n },\n  "thumbnailVideoUrl": thumbnailVideo.asset->url\n },\n      *[_type == "caseStudy" && featured == true]\n        | order(coalesce(order, 9999) asc, year desc) { \n  _id,\n  title,\n  "slug": slug.current,\n  summary,\n  client,\n  roles,\n  date,\n  year,\n  projectType,\n  tags,\n  accentColor,\n  featured,\n  order,\n  coverImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n },\n  "thumbnailVideoUrl": thumbnailVideo.asset->url\n }\n    )\n  }\n': HomePageQueryResult;
-    '\n  *[_type == "caseStudy" && defined(slug.current)]\n    | order(coalesce(order, 9999) asc, year desc) {\n    \n  _id,\n  title,\n  "slug": slug.current,\n  summary,\n  client,\n  roles,\n  date,\n  year,\n  projectType,\n  tags,\n  accentColor,\n  featured,\n  order,\n  coverImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n },\n  "thumbnailVideoUrl": thumbnailVideo.asset->url\n\n  }\n': CaseStudiesQueryResult;
+    '\n  *[_type == "homePage"][0] {\n    heroHeadline,\n    heroSubline,\n    marqueeWords,\n    workSectionHeading,\n    playgroundSectionHeading,\n    testimonialsSectionHeading,\n    ctaHeading,\n    ctaText,\n    seo { \n  title,\n  description,\n  noIndex,\n  ogImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n },\n    // Explicit order if set, otherwise everything flagged as featured.\n    "featured": coalesce(\n      featuredCaseStudies[]-> { \n  _id,\n  title,\n  "slug": slug.current,\n  summary,\n  project,\n  client,\n  date,\n  year,\n  projectType,\n  accentColor,\n  featured,\n  order,\n  coverImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n },\n  "thumbnailVideoUrl": thumbnailVideo.asset->url\n },\n      *[_type == "caseStudy" && featured == true]\n        | order(coalesce(order, 9999) asc, year desc) { \n  _id,\n  title,\n  "slug": slug.current,\n  summary,\n  project,\n  client,\n  date,\n  year,\n  projectType,\n  accentColor,\n  featured,\n  order,\n  coverImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n },\n  "thumbnailVideoUrl": thumbnailVideo.asset->url\n }\n    )\n  }\n': HomePageQueryResult;
+    '\n  *[_type == "caseStudy" && defined(slug.current)]\n    | order(coalesce(order, 9999) asc, year desc) {\n    \n  _id,\n  title,\n  "slug": slug.current,\n  summary,\n  project,\n  client,\n  date,\n  year,\n  projectType,\n  accentColor,\n  featured,\n  order,\n  coverImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n },\n  "thumbnailVideoUrl": thumbnailVideo.asset->url\n\n  }\n': CaseStudiesQueryResult;
     '\n  *[_type == "caseStudy" && defined(slug.current)].slug.current\n': CaseStudySlugsQueryResult;
-    '\n  *[_type == "caseStudy" && slug.current == $slug][0] {\n    \n  _id,\n  title,\n  "slug": slug.current,\n  summary,\n  client,\n  roles,\n  date,\n  year,\n  projectType,\n  tags,\n  accentColor,\n  featured,\n  order,\n  coverImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n },\n  "thumbnailVideoUrl": thumbnailVideo.asset->url\n,\n    timeline,\n    tools,\n    externalUrl,\n    seo { \n  title,\n  description,\n  noIndex,\n  ogImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n },\n    body[] {\n      ...,\n      _type == "imageBlock" => { ..., image { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n } },\n      _type == "imageGrid" => { ..., images[] { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n } },\n      _type == "videoBlock" => {\n        ...,\n        "videoUrl": file.asset->url,\n        poster { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n      },\n      _type == "block" => {\n        ...,\n        markDefs[] { ... }\n      }\n    },\n    "testimonials": *[_type == "testimonial" && relatedCaseStudy._ref == ^._id]\n      | order(coalesce(order, 9999) asc) {\n      _id, quote, authorName, role, company,\n      avatar { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n    },\n    // Neighbours for the "next project" link at the end of a case study.\n    "next": *[_type == "caseStudy" && defined(slug.current) && _id != ^._id]\n      | order(coalesce(order, 9999) asc, year desc)[0] {\n      title, "slug": slug.current, coverImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n    }\n  }\n': CaseStudyBySlugQueryResult;
+    '\n  *[_type == "caseStudy" && slug.current == $slug][0] {\n    \n  _id,\n  title,\n  "slug": slug.current,\n  summary,\n  project,\n  client,\n  date,\n  year,\n  projectType,\n  accentColor,\n  featured,\n  order,\n  coverImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n },\n  "thumbnailVideoUrl": thumbnailVideo.asset->url\n,\n    intro,\n    scopeOfWork,\n    timeline,\n    externalUrl,\n    seo { \n  title,\n  description,\n  noIndex,\n  ogImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n },\n    body[] {\n      ...,\n      _type == "imageBlock" => { ..., image { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n } },\n      _type == "imageGrid" => { ..., images[] { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n } },\n      _type == "videoBlock" => {\n        ...,\n        "videoUrl": file.asset->url,\n        poster { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n      },\n      _type == "block" => {\n        ...,\n        markDefs[] { ... }\n      }\n    },\n    "testimonials": *[_type == "testimonial" && relatedCaseStudy._ref == ^._id]\n      | order(coalesce(order, 9999) asc) {\n      _id, quote, authorName, role, company,\n      avatar { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n    },\n    // Neighbours for the "next project" link at the end of a case study.\n    "next": *[_type == "caseStudy" && defined(slug.current) && _id != ^._id]\n      | order(coalesce(order, 9999) asc, year desc)[0] {\n      title, "slug": slug.current, coverImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n    }\n  }\n': CaseStudyBySlugQueryResult;
     '\n  *[_type == "shot"] | order(coalesce(order, 9999) asc, date desc) {\n    _id,\n    title,\n    mediaType,\n    aspectRatio,\n    date,\n    externalLink,\n    image { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n },\n    "videoUrl": video.asset->url,\n    videoPoster { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n  }\n': ShotsQueryResult;
     '\n  *[_type == "about"][0] {\n    headline,\n    bio,\n    skills,\n    tools,\n    portrait { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n },\n    seo { \n  title,\n  description,\n  noIndex,\n  ogImage { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n }\n  }\n': AboutQueryResult;
     '\n  *[_type == "experience"] | order(startDate desc) {\n    _id,\n    company,\n    role,\n    startDate,\n    endDate,\n    isCurrent,\n    location,\n    description,\n    url,\n    logo { \n  ...,\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height, aspectRatio } }\n  }\n }\n  }\n': ExperiencesQueryResult;

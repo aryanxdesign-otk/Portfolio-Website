@@ -67,17 +67,102 @@ export const seedHomePage = {
   featured: [],
 };
 
+/**
+ * Portable Text helpers for the seed body.
+ *
+ * Every seed case study previously had an empty body, which meant the
+ * template — headings tight to their paragraphs, images breaking wider than
+ * the prose — was invisible until Sanity was configured. That makes it
+ * impossible to review the thing we are building.
+ */
+function para(key: string, text: string) {
+  return {
+    _type: "block" as const,
+    _key: key,
+    style: "normal" as const,
+    markDefs: [],
+    children: [{ _type: "span" as const, _key: `${key}s`, text, marks: [] }],
+  };
+}
+
+function heading(key: string, text: string) {
+  return {
+    _type: "block" as const,
+    _key: key,
+    style: "h2" as const,
+    markDefs: [],
+    children: [{ _type: "span" as const, _key: `${key}s`, text, marks: [] }],
+  };
+}
+
+/** A placeholder image slot, so the body shows the full-width rhythm. */
+function imagePlaceholder(key: string, width: "full" | "inset" | "bleed") {
+  return {
+    _type: "imageBlock" as const,
+    _key: key,
+    width,
+    background: false,
+    image: null,
+  };
+}
+
 export const seedCaseStudies = [
   {
     _id: "seed-fireplace-pro",
-    title: "Fireplace Pro",
+    title: "Solving critical UX for Pro-traders of Prediction Markets",
+    project: "Fireplace Pro",
     slug: "fireplace-pro",
-    summary: "Pro trading terminal for active traders.",
+    summary: "A professional trading terminal built on top of Polymarket.",
     date: "2026-02-01",
     projectType: "Trading terminal",
-    tags: ["Product design", "Design systems"],
+    scopeOfWork: ["Product Design", "Web Design", "Visual Design", "UX Flows"],
+    intro:
+      "Fireplace is a professional trading terminal built on top of " +
+      "Polymarket, designed to solve the user-facing problems that arise as " +
+      "prediction markets scale. While Polymarket handles liquidity and " +
+      "settlement, Fireplace focuses on the layer above \u2014 helping traders " +
+      "discover relevant markets, interpret what's moving and why, and " +
+      "execute with confidence. With tens of thousands of active markets and " +
+      "AI accelerating information production, manually browsing for " +
+      "opportunities breaks down fast.",
+    body: [
+      imagePlaceholder("b1", "full"),
+      heading("b2", "My role"),
+      para(
+        "b3",
+        "I worked closely with the founders to understand the target audience " +
+          "\u2014 active retail traders and professionals treating prediction " +
+          "markets as a distinct asset class \u2014 and translated that into a " +
+          "cohesive product experience. My work spanned the full trading " +
+          "workflow: designing pro execution features along with a robust " +
+          "tracking and notifications flow to keep traders informed in real " +
+          "time.",
+      ),
+      imagePlaceholder("b4", "full"),
+      heading("b5", "The Trading Terminal"),
+      para(
+        "b6",
+        "The terminal is Fireplace's execution core, unifying charts, order " +
+          "books and controls into one continuous surface to eliminate " +
+          "context-switching at the moment speed matters most. I focused on " +
+          "the micro-interactions that make it feel genuinely pro: preset " +
+          "sizing shortcuts, an actions hub centralising every order path, and " +
+          "inline order editing that replaced a multi-screen detour with a " +
+          "single click.",
+      ),
+      {
+        _type: "imageGrid" as const,
+        _key: "b7",
+        gap: "normal" as const,
+        images: [null, null],
+      },
+      para(
+        "b8",
+        "Each reduction in friction here serves one thesis: execution speed is " +
+          "inseparable from decision confidence.",
+      ),
+    ],
     client: "Fireplace",
-    roles: ["Product design"],
     year: 2026,
     accentColor: null,
     featured: true,
@@ -87,14 +172,14 @@ export const seedCaseStudies = [
   },
   {
     _id: "seed-brahma-fi",
-    title: "Brahma.Fi",
+    title: "Making prediction markets legible at scale",
+    project: "Brahma.Fi",
     slug: "brahma-fi",
     summary: "Prediction markets. Acquired by Polymarket.",
     date: "2025-06-01",
     projectType: "Prediction markets",
-    tags: ["Product design", "0 to 1"],
+    scopeOfWork: ["Product Design", "UX Flows"],
     client: "Brahma.Fi",
-    roles: ["Product design"],
     year: 2025,
     accentColor: null,
     featured: true,
@@ -104,14 +189,14 @@ export const seedCaseStudies = [
   },
   {
     _id: "seed-obvious",
-    title: "Obvious",
+    title: "Security-first design for self-custody",
+    project: "Obvious",
     slug: "obvious",
     summary: "Security first by design.",
     date: "2025-01-01",
     projectType: "Security",
-    tags: ["Product design"],
+    scopeOfWork: ["Visual Design", "Brand"],
     client: "Obvious",
-    roles: ["Product design"],
     year: 2025,
     accentColor: null,
     featured: true,

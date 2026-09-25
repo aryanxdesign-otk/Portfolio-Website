@@ -7,15 +7,35 @@ import { VideoPlayer } from "@/components/ui/VideoPlayer";
 import { cn } from "@/lib/cn";
 import type { SanityImageWithMeta } from "@/sanity/lib/image";
 
-/** Maps the schema's width variants onto layout classes. */
+/**
+ * Prose runs in a narrower column than imagery — the template's defining
+ * rhythm. `inset` matches the text column, `full` is the wider image column
+ * (the container), and `bleed` escapes to the viewport.
+ */
+const PROSE = "mx-auto max-w-[46rem]";
+
 const widthClass = {
-  inset: "mx-auto max-w-[68ch]",
+  inset: PROSE,
   full: "w-full",
-  // Breaks out of the container to the full viewport width.
   bleed: "relative left-1/2 w-screen -translate-x-1/2",
 } as const;
 
 type Width = keyof typeof widthClass;
+
+/**
+ * Shown where an image block exists but its image has not been uploaded.
+ *
+ * Rendering nothing would silently swallow the block, so an editor who adds
+ * an image and forgets to attach one sees no sign of the mistake. A visible
+ * frame is the more useful failure.
+ */
+function EmptyMedia({ label }: { label?: string | null }) {
+  return (
+    <div className="border-line bg-bg-subtle text-ink-faint grid aspect-[16/10] w-full place-items-center rounded-(--radius) border border-dashed text-sm">
+      {label ?? "Image"}
+    </div>
+  );
+}
 
 function Figure({
   children,
@@ -53,8 +73,15 @@ export const portableTextComponents: PortableTextComponents = {
   types: {
     imageBlock: ({ value }) => {
       const image = value?.image as SanityImageWithMeta | undefined;
-      if (!image?.asset) return null;
       const width = (value?.width ?? "full") as Width;
+
+      if (!image?.asset) {
+        return (
+          <Figure width={width}>
+            <EmptyMedia />
+          </Figure>
+        );
+      }
 
       return (
         <Figure caption={image.caption} width={width}>
@@ -80,7 +107,11 @@ export const portableTextComponents: PortableTextComponents = {
     },
 
     imageGrid: ({ value }) => {
-      const images = (value?.images ?? []) as SanityImageWithMeta[];
+      // Entries can be null while a grid is still being filled in; reading
+      // through them crashes the render, so they are normalised here.
+      const images = (
+        (value?.images ?? []) as (SanityImageWithMeta | null)[]
+      ).filter((image) => image !== undefined);
       if (images.length === 0) return null;
 
       const gap = {
@@ -99,13 +130,17 @@ export const portableTextComponents: PortableTextComponents = {
             )}
           >
             {images.map((image, index) => (
-              <figure key={image.asset?._ref ?? index}>
-                <SanityImage
-                  image={image}
-                  className="w-full rounded-(--radius)"
-                  sizes={`(max-width: 640px) 100vw, ${Math.round(100 / images.length)}vw`}
-                />
-                {image.caption ? (
+              <figure key={image?.asset?._ref ?? index}>
+                {image?.asset ? (
+                  <SanityImage
+                    image={image}
+                    className="w-full rounded-(--radius)"
+                    sizes={`(max-width: 640px) 100vw, ${Math.round(100 / images.length)}vw`}
+                  />
+                ) : (
+                  <EmptyMedia />
+                )}
+                {image?.caption ? (
                   <figcaption className="text-ink-muted mt-2 text-sm">
                     {image.caption}
                   </figcaption>
@@ -144,7 +179,7 @@ export const portableTextComponents: PortableTextComponents = {
 
     pullQuote: ({ value }) => (
       <FadeIn className="my-14 md:my-24">
-        <figure className="mx-auto max-w-[24ch] text-center">
+        <figure className="mx-auto max-w-[26ch] text-center">
           <blockquote className="text-2xl font-medium tracking-tight text-balance">
             &ldquo;{value?.quote}&rdquo;
           </blockquote>
@@ -166,7 +201,9 @@ export const portableTextComponents: PortableTextComponents = {
 
       return (
         <FadeIn className="my-14 md:my-20">
-          <dl className="border-line grid grid-cols-2 gap-8 border-y py-10 md:grid-cols-4 md:gap-4">
+          <dl
+            className={`${PROSE} border-line grid grid-cols-2 gap-8 border-y py-10 md:grid-cols-4 md:gap-4`}
+          >
             {stats.map((stat, index) => (
               <div key={`${stat.value}-${index}`}>
                 {/* Value before label visually, but dt/dd order is kept
@@ -222,39 +259,45 @@ export const portableTextComponents: PortableTextComponents = {
   },
 
   block: {
+    // Small, bold, and sitting directly on the paragraph beneath, so the
+    // heading reads as that paragraph's first line rather than as a section
+    // break with air around it. Same column as the prose, or it would hang
+    // out past the text it introduces.
     h2: ({ children }) => (
-      <FadeIn as="div" y={16}>
-        <h2 className="mt-16 mb-4 text-xl font-medium tracking-tight md:mt-24">
-          {children}
-        </h2>
-      </FadeIn>
+      <h2 className={`${PROSE} text-ink text-md mt-16 mb-1 font-medium`}>
+        {children}
+      </h2>
     ),
     h3: ({ children }) => (
-      <h3 className="mt-10 mb-3 text-lg font-medium tracking-tight">
-        {children}
-      </h3>
+      <h3 className={`${PROSE} text-ink mt-10 mb-1 font-medium`}>{children}</h3>
     ),
     lead: ({ children }) => (
-      <p className="text-ink mb-8 max-w-[60ch] text-lg">{children}</p>
+      <p className={`${PROSE} text-ink mb-8 text-lg`}>{children}</p>
     ),
     blockquote: ({ children }) => (
-      <blockquote className="border-line text-ink-muted my-8 border-l-2 pl-6 italic">
+      <blockquote
+        className={`${PROSE} border-line text-ink-muted my-8 border-l-2 pl-6 italic`}
+      >
         {children}
       </blockquote>
     ),
     normal: ({ children }) => (
-      <p className="text-ink-muted mb-5 max-w-[68ch]">{children}</p>
+      <p className={`${PROSE} text-ink-muted mb-5 leading-[1.75]`}>
+        {children}
+      </p>
     ),
   },
 
   list: {
     bullet: ({ children }) => (
-      <ul className="text-ink-muted mb-6 max-w-[68ch] list-disc space-y-2 pl-5">
+      <ul className={`${PROSE} text-ink-muted mb-6 list-disc space-y-2 pl-5`}>
         {children}
       </ul>
     ),
     number: ({ children }) => (
-      <ol className="text-ink-muted mb-6 max-w-[68ch] list-decimal space-y-2 pl-5">
+      <ol
+        className={`${PROSE} text-ink-muted mb-6 list-decimal space-y-2 pl-5`}
+      >
         {children}
       </ol>
     ),

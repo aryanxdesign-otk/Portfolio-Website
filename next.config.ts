@@ -24,13 +24,6 @@ const nextConfig: NextConfig = {
 
   typedRoutes: true,
 
-  // The interaction pages read their own source files so the code shown is
-  // always the code that runs. Tracing keeps those files in the deployment;
-  // without this they exist at build time and vanish at runtime.
-  outputFileTracingIncludes: {
-    "/interactions/[slug]": ["./src/interactions/**/*.tsx"],
-  },
-
   // The three collections replaced the old /work space. Permanent, so search
   // engines and anyone holding an old link land on the new home.
   async redirects() {

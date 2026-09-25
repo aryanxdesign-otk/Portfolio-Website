@@ -19,7 +19,7 @@ export default async function CaseStudiesIndex() {
 
   const items: GridItem[] = projects.map((project) => ({
     id: project._id,
-    title: project.title ?? "",
+    title: project.project ?? project.title ?? "",
     href: `/case-studies/${project.slug}`,
     // Titles and a couple of tags only — the image carries the page.
     tags: [

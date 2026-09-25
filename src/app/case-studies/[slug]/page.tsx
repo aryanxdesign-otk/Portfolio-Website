@@ -4,9 +4,9 @@ import { Suspense } from "react";
 
 import { PortableTextRenderer } from "@/components/portable-text/PortableTextRenderer";
 import { BackLink } from "@/components/ui/BackLink";
-import { MetaRow } from "@/components/ui/MetaRow";
+import { ProjectMeta } from "@/components/ui/ProjectMeta";
 import { SanityImage } from "@/components/ui/SanityImage";
-import { formatDate } from "@/lib/date";
+import { ScopeOfWork } from "@/components/ui/ScopeOfWork";
 import { getCaseStudy, getCaseStudySlugs } from "@/sanity/lib/content";
 
 export async function generateStaticParams() {
@@ -29,10 +29,13 @@ export async function generateMetadata(
 }
 
 /**
- * The params read lives inside the Suspense boundary, not above it. Awaiting
- * params at the page level would tie this route's prerendered App Shell to a
- * single URL, so case studies added after the last build would lose it.
+ * Prose sits in a narrower column than the imagery — text at `prose-column`,
+ * images at the full container. That relationship is the template's most
+ * distinctive rule, so it lives in one class here and in the Portable Text
+ * width variants, nowhere else.
  */
+const PROSE = "mx-auto max-w-[46rem]";
+
 async function CaseStudyBody({
   params,
 }: Pick<PageProps<"/case-studies/[slug]">, "params">) {
@@ -42,40 +45,26 @@ async function CaseStudyBody({
 
   return (
     <>
-      <BackLink href="/case-studies">Case studies</BackLink>
+      <div className={PROSE}>
+        <BackLink href="/case-studies">Case studies</BackLink>
 
-      <h1 className="mt-8 max-w-[18ch] text-3xl font-medium tracking-tight text-balance">
-        {project.title}
-      </h1>
+        <h1 className="mt-8 max-w-[20ch] text-3xl font-medium tracking-tight text-balance">
+          {project.title}
+        </h1>
 
-      {project.summary ? (
-        <p className="text-ink-muted mt-5 max-w-[56ch] text-lg leading-relaxed">
-          {project.summary}
-        </p>
-      ) : null}
-
-      <MetaRow
-        items={[
-          { label: "Date", value: formatDate(project.date) },
-          { label: "Role", value: project.roles?.join(", ") },
-          { label: "Client", value: project.client },
-          { label: "Timeline", value: project.timeline },
-        ]}
-      />
-
-      {project.externalUrl ? (
-        <a
-          href={project.externalUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-ink decoration-line hover:decoration-ink mt-8 inline-block text-sm underline underline-offset-4 transition-colors"
-        >
-          Visit site ↗
-        </a>
-      ) : null}
+        <ProjectMeta
+          items={[
+            { label: "Project", value: project.project },
+            {
+              label: "Year",
+              value: project.year ? String(project.year) : null,
+            },
+          ]}
+        />
+      </div>
 
       {project.coverImage?.asset ? (
-        <div className="bg-bg-subtle border-line mt-14 overflow-hidden rounded-(--radius-card) border">
+        <div className="bg-bg-subtle border-line mt-12 overflow-hidden rounded-(--radius-card) border">
           <SanityImage
             image={project.coverImage}
             priority
@@ -85,12 +74,36 @@ async function CaseStudyBody({
         </div>
       ) : null}
 
+      <div className={`${PROSE} mt-12`}>
+        {project.intro ? (
+          <p className="text-ink leading-[1.75] font-medium text-pretty">
+            {project.intro}
+          </p>
+        ) : null}
+
+        <ScopeOfWork items={project.scopeOfWork} />
+
+        {project.externalUrl ? (
+          <a
+            href={project.externalUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-ink decoration-line hover:decoration-ink mt-8 inline-block text-sm underline underline-offset-4 transition-colors"
+          >
+            Visit site ↗
+          </a>
+        ) : null}
+      </div>
+
+      {/* The rule that closes the header and opens the case study proper. */}
+      <hr className="border-line mt-16 border-t" />
+
       <div className="mt-16">
         <PortableTextRenderer value={project.body} />
       </div>
 
       {project.next?.slug ? (
-        <nav className="border-line mt-24 border-t pt-6">
+        <nav className={`${PROSE} border-line mt-24 border-t pt-6`}>
           <BackLink href={`/case-studies/${project.next.slug}`}>
             Next: {project.next.title}
           </BackLink>
@@ -108,7 +121,8 @@ export default function CaseStudyPage(
       id="main"
       className="flex-1 px-6 pt-12 pb-(--space-section) md:px-8 md:pt-16"
     >
-      <div className="mx-auto max-w-4xl">
+      {/* Container is the image width; prose narrows inside it. */}
+      <div className="mx-auto max-w-[64rem]">
         <Suspense fallback={<div className="h-screen" />}>
           <CaseStudyBody params={props.params} />
         </Suspense>

@@ -34,6 +34,17 @@ export const caseStudy = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "project",
+      title: "Project",
+      type: "string",
+      group: "content",
+      description:
+        "The product or engagement name, e.g. \u201cFireplace Pro\u201d. Shown in the " +
+        "meta row and as the title on the work grid \u2014 the case study title " +
+        "itself is the longer statement above.",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
       name: "summary",
       title: "Summary",
       type: "text",
@@ -43,6 +54,28 @@ export const caseStudy = defineType({
         "One or two sentences. Shown on cards in the work index and used as " +
         "the fallback meta description.",
       validation: (rule) => rule.required().max(280),
+    }),
+    defineField({
+      name: "intro",
+      title: "Intro",
+      type: "text",
+      rows: 6,
+      group: "content",
+      description:
+        "The opening paragraph, shown under the hero image. Sets up the " +
+        "problem and what the work is. Longer than the summary, which is " +
+        "only for the grid card.",
+    }),
+    defineField({
+      name: "scopeOfWork",
+      title: "Scope of work",
+      type: "array",
+      group: "content",
+      of: [{ type: "string" }],
+      options: { layout: "tags" },
+      description:
+        "Rendered as pills under the intro, e.g. Product Design, Web " +
+        "Design, Visual Design, UX Flows.",
     }),
     defineField({
       name: "body",
@@ -58,15 +91,6 @@ export const caseStudy = defineType({
       type: "string",
       group: "meta",
       description: "Company or product name. Leave blank for personal work.",
-    }),
-    defineField({
-      name: "roles",
-      title: "Your role",
-      type: "array",
-      group: "meta",
-      of: [{ type: "string" }],
-      options: { layout: "tags" },
-      description: "e.g. Product design, Design systems, Prototyping",
     }),
     defineField({
       name: "date",
@@ -93,27 +117,11 @@ export const caseStudy = defineType({
         "One short label for the grid, e.g. \u201cTrading terminal\u201d.",
     }),
     defineField({
-      name: "tags",
-      title: "Tags",
-      type: "array",
-      group: "meta",
-      of: [{ type: "string" }],
-      options: { layout: "tags" },
-    }),
-    defineField({
       name: "timeline",
       title: "Timeline",
       type: "string",
       group: "meta",
       description: "e.g. “3 months”, “Ongoing”",
-    }),
-    defineField({
-      name: "tools",
-      title: "Tools",
-      type: "array",
-      group: "meta",
-      of: [{ type: "string" }],
-      options: { layout: "tags" },
     }),
     defineField({
       name: "externalUrl",
